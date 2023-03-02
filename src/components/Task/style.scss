@@ -4,8 +4,18 @@
   padding: 10px;
   font-size: 12px;
   display: flex;
+  flex-direction: column;
   justify-content: space-between;
   position: relative;
+  .task-header {
+    display: flex;
+    justify-content: space-between;
+    border-bottom: 1px solid;
+    padding: 10px 0px;
+  }
+  .task-body {
+    padding: 10px;
+  }
 }
 
 .task-menu {
@@ -13,8 +23,8 @@
   z-index: 200;
   position: absolute;
   flex-direction: column;
-  top: 30px;
-  left: 130px;
+  top: 40px;
+  left: 150px;
   background-color: #FFF;
   border-radius: 10px;
   transition: 0.3s ease;

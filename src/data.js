@@ -2,19 +2,23 @@ const data = {
   tasks: {
     'task-1': {
       id: 'task-1',
-      content: 'Take out the garbage'
+      title: 'Take out the garbage',
+      description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed non nibh lobortis, blandit dui sit amet, finibus dui.',
     },
     'task-2': {
       id: 'task-2',
-      content: 'Watch my favorite show'
+      title: 'Watch my favorite show',
+      description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed non nibh lobortis, blandit dui sit amet, finibus dui.'
     },
     'task-3': {
       id: 'task-3',
-      content: 'Charge my phone'
+      title: 'Charge my phone',
+      description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed non nibh lobortis, blandit dui sit amet, finibus dui.'
     },
     'task-4':{
       id: 'task-4',
-      content: 'Cook dinner'
+      title: 'Cook dinner',
+      description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed non nibh lobortis, blandit dui sit amet, finibus dui.'
     }
   },
   columns: {

@@ -25,7 +25,7 @@ export default function Column({title, columnId, tasks}) {
 
     const newTask = {
       id: newTaskId,
-      content: 'Testing creation'
+      title: 'Testing creation'
     }
 
     dispatch(createNewTask({columnId, newTask, newTaskId}))
