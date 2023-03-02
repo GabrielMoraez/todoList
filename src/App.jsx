@@ -5,6 +5,7 @@ import { useSelector, useDispatch } from 'react-redux'
 import Column from './components/Column'
 import { updateData } from './slices/dataSlice'
 import './style.scss'
+import Header from './components/Header'
 
 export default function App() {
   const dispatch = useDispatch()
@@ -68,22 +69,25 @@ export default function App() {
   }
 
   return (
-    <DragDropContext onDragEnd={onDragEnd}>
-      <div className='container'>
-        {
-          data.columnOrder.map((columnId, index) => {
-            const column = data.columns[columnId]
-            const tasks = column.taskIds.map(taskId => data.tasks[taskId])
-        
-            return <Column
-              key={index}
-              columnId={column.id}
-              title={column.title}
-              tasks={tasks}
-              />
-          })
-        }
-      </div>
-    </DragDropContext>
+    <>
+      <Header />
+      <DragDropContext onDragEnd={onDragEnd}>
+        <div className='container'>
+          {
+            data.columnOrder.map((columnId, index) => {
+              const column = data.columns[columnId]
+              const tasks = column.taskIds.map(taskId => data.tasks[taskId])
+          
+              return <Column
+                key={index}
+                columnId={column.id}
+                title={column.title}
+                tasks={tasks}
+                />
+            })
+          }
+        </div>
+      </DragDropContext>
+    </>
   )
 }

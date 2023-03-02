@@ -22,6 +22,10 @@ export const dataSlice = createSlice({
       state.tasks[payload.taskId] = payload.editedTask
       return state
     },
+    createColumn: (state, {payload}) => {
+      state.columns[payload.newColumn.id] = payload.newColumn
+      state.columnOrder.push(payload.newColumn.id)
+    },
     updateData: (state, { payload }) => {
       state = {
         ...state,
@@ -46,6 +50,6 @@ export const dataSlice = createSlice({
 });
 
 
-export const { createNewTask, deleteTask, editTask, updateData } = dataSlice.actions
+export const { createNewTask, deleteTask, editTask, updateData, createColumn } = dataSlice.actions
 
 export default dataSlice.reducer
