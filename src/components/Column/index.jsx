@@ -65,6 +65,7 @@ export default function Column({title, columnId, tasks}) {
                   key={task.id}
                   task={task}
                   index={index}
+                  columnId={columnId}
                 />
               )
             }
