@@ -6,9 +6,9 @@ function App() {
 
   return (
     <div className='container'>
-      <Column></Column>
-      <Column></Column>
-      <Column></Column>
+      <Column title={'To-do'} />
+      <Column title={'Doing'}/>
+      <Column title={'Done'}/>
     </div>
   )
 }
