@@ -3,10 +3,10 @@ import { Droppable } from 'react-beautiful-dnd'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { useSelector, useDispatch } from 'react-redux'
 
+import { createNewTask, deleteColumn} from '../../slices/dataSlice'
 import Task from '../Task'
-import { createNewTask } from '../../slices/dataSlice'
-import './style.scss'
 
+import './style.scss'
 
 export default function Column({title, columnId, tasks}) {
   const [menuCollapse, setMenuCollapse] = useState(false)
@@ -40,6 +40,10 @@ export default function Column({title, columnId, tasks}) {
   const handleShowHideTaskCounter = () => {
     setShowTaskCounter(!showTaskCounter)
   }
+
+  const handleDeleteColumn = () => {
+    dispatch(deleteColumn({columnId}))
+  }
   
   return (
     <div className='column'>
@@ -58,6 +62,10 @@ export default function Column({title, columnId, tasks}) {
                 </li>
                 <li onClick={handleShowHideTaskCounter}>
                   {showTaskCounter ? 'Disable Task Counter' : 'Enable Task Counter'}
+                </li>
+                <li onClick={handleDeleteColumn}>
+                  <FontAwesomeIcon size='sm' icon="fa-solid fa-trash" />
+                  {'Delete Column'}
                 </li>
               </ul>
             </div>
