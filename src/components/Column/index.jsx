@@ -5,6 +5,7 @@ import { useSelector, useDispatch } from 'react-redux'
 
 import Task from '../Task'
 import { createNewTask } from '../../slices/dataSlice'
+import './style.scss'
 
 
 export default function Column({title, columnId, tasks}) {
@@ -28,6 +29,7 @@ export default function Column({title, columnId, tasks}) {
     }
 
     dispatch(createNewTask({columnId, newTask, newTaskId}))
+    handleToggleMenu()
   }
   
   return (

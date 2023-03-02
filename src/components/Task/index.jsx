@@ -1,4 +1,5 @@
 import { Draggable } from 'react-beautiful-dnd'
+import './style.scss'
 
 export default function Task({task, index}) {
   return (
