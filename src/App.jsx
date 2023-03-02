@@ -1,17 +1,17 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { DragDropContext } from 'react-beautiful-dnd'
+import { useSelector, useDispatch } from 'react-redux'
 
 import Column from './components/Column'
-import data from './data'
-
+import { updateData } from './slices/dataSlice'
 import './style.scss'
 
-class App extends React.Component {
-  state = data
-
-  onDragEnd = result => {
+export default function App() {
+  const dispatch = useDispatch()
+  const data = useSelector(state => state.data)
+  
+  const onDragEnd = result => {
     const { destination, source, draggableId } = result
-    console.log(result)
     if (!destination) {
       return
     }
@@ -19,10 +19,9 @@ class App extends React.Component {
     if (destination.droppableId === source.droppableId && destination.index === source.index) {
       return
     }
-
     
     if (destination.droppableId === source.droppableId) {
-      const column = this.state.columns[source.droppableId]
+      const column = data.columns[source.droppableId]
       const tasks = Array.from(column.taskIds)
   
       tasks.splice(source.index, 1)
@@ -32,25 +31,16 @@ class App extends React.Component {
         ...column,
         taskIds: tasks
       }
-  
-      const newState = {
-        ...this.state,
-        columns: {
-          ...this.state.columns,
-          [newColumn.id]: newColumn,
-        },
-      }
-      
-      this.setState(newState)
-      
+    
+      dispatch(updateData({newColumn}))
+
       return
     }
 
-
-    const sourceColumn = this.state.columns[source.droppableId]
+    const sourceColumn = data.columns[source.droppableId]
     const sourceTasks = Array.from(sourceColumn.taskIds)
 
-    const destinationColumn = this.state.columns[destination.droppableId]
+    const destinationColumn = data.columns[destination.droppableId]
     const destinationTasks = Array.from(destinationColumn.taskIds)
 
     sourceTasks.splice(source.index, 1)
@@ -66,40 +56,34 @@ class App extends React.Component {
     }
 
     const newState = {
-      ...this.state,
+      ...data,
       columns: {
-        ...this.state.columns,
+        ...data.columns,
         [newColumn.id]: newColumn,
         [oldColumn.id]: oldColumn,
       },
     }
 
-    this.setState(newState)
-
+    dispatch(updateData({newColumn, oldColumn}))
   }
 
-
-  render() {
-    return (
-      <DragDropContext onDragEnd={this.onDragEnd}>
-        <div className='container'>
-          {
-            this.state.columnOrder.map((columnId, index) => {
-              const column = this.state.columns[columnId]
-              const tasks = column.taskIds.map(taskId => this.state.tasks[taskId])
-          
-              return <Column
-                key={index}
-                columnId={column.id}
-                title={column.title}
-                tasks={tasks}
-                />
-            })
-          }
-        </div>
-      </DragDropContext>
-    )
-  }
+  return (
+    <DragDropContext onDragEnd={onDragEnd}>
+      <div className='container'>
+        {
+          data.columnOrder.map((columnId, index) => {
+            const column = data.columns[columnId]
+            const tasks = column.taskIds.map(taskId => data.tasks[taskId])
+        
+            return <Column
+              key={index}
+              columnId={column.id}
+              title={column.title}
+              tasks={tasks}
+              />
+          })
+        }
+      </div>
+    </DragDropContext>
+  )
 }
-
-export default App
