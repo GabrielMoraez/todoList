@@ -1,9 +1,18 @@
-import { useState } from 'react'
+import { Draggable } from 'react-beautiful-dnd'
 
-export default function Task({taskTitle}) {
+export default function Task({task, index}) {
   return (
-    <div className='task'>
-      {taskTitle}
-    </div>
+    <Draggable draggableId={task.id} index={index}>
+      {provided => (
+        <div
+          ref={provided.innerRef}
+          {...provided.draggableProps}
+          {...provided.dragHandleProps}
+          className='task'
+        >
+          {task.content}
+        </div>
+      )}
+    </Draggable>
   )
 }
