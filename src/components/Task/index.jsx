@@ -8,6 +8,12 @@ import Modal from 'react-bootstrap/Modal';
 import { deleteTask, editTask } from '../../slices/dataSlice'
 import './style.scss'
 
+const PRIORITY = {
+  1: 'Low',
+  2: 'Medium',
+  3: 'High',
+}
+
 export default function Task({task, index, columnId}) {
   const [menuCollapse, setMenuCollapse] = useState(false)
   const [taskCollapse, setTaskCollapse] = useState(false)
@@ -26,12 +32,14 @@ export default function Task({task, index, columnId}) {
   function EditTaskModal(props) {
     const [taskTitle, setTaskTitle] = useState(props.task.title)
     const [taskDescription, setTaskDescription] = useState(props.task.description)
+    const [taskPriority, setTaskPriority] = useState(props.task.priority)
 
     const handleEditTask = () => {
       const editedTask = {
         id: props.task.id,
         title: taskTitle,
-        description: taskDescription
+        description: taskDescription,
+        priority: taskPriority
       }
   
       dispatch(editTask({taskId: task.id, editedTask}))
@@ -54,13 +62,28 @@ export default function Task({task, index, columnId}) {
           </Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <h4>Task description</h4>
-          <textarea
-            value={taskDescription}
-            onChange={(e) => setTaskDescription(e.target.value)}
-            cols={50}
-            rows={5}
-          />
+          <div>
+            <h4>Task description</h4>
+            <textarea
+              value={taskDescription}
+              onChange={(e) => setTaskDescription(e.target.value)}
+              cols={50}
+              rows={5}
+            />
+          </div>
+          <div>
+            <h4>Task Priority</h4>
+            <select
+              value={task.priority}
+              onChange={(e) => setTaskPriority(e.target.value)}
+            >
+              {
+                Object.entries(PRIORITY).map(([key, value]) => (
+                  <option key={key} value={key}>{value}</option>
+                ))
+              }
+            </select>
+          </div>
         </Modal.Body>
         <Modal.Footer>
           <Button onClick={handleEditTask}>Save</Button>
@@ -98,6 +121,10 @@ export default function Task({task, index, columnId}) {
                   </ul>
                 </div>
               )}
+            </div>
+            <div className='task-priority'>
+              Priority: 
+              <span className={`priority-label ${PRIORITY[task.priority]}`}>{PRIORITY[task.priority]}</span>
             </div>
             <div className='task-body'>
               {task.description}

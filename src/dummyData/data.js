@@ -4,21 +4,25 @@ const data = {
       id: 'task-1',
       title: 'Take out the garbage',
       description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed non nibh lobortis, blandit dui sit amet, finibus dui.',
+      priority: 1,
     },
     'task-2': {
       id: 'task-2',
       title: 'Watch my favorite show',
-      description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed non nibh lobortis, blandit dui sit amet, finibus dui.'
+      description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed non nibh lobortis, blandit dui sit amet, finibus dui.',
+      priority: 2,
     },
     'task-3': {
       id: 'task-3',
       title: 'Charge my phone',
-      description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed non nibh lobortis, blandit dui sit amet, finibus dui.'
+      description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed non nibh lobortis, blandit dui sit amet, finibus dui.',
+      priority: 2,
     },
     'task-4':{
       id: 'task-4',
       title: 'Cook dinner',
-      description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed non nibh lobortis, blandit dui sit amet, finibus dui.'
+      description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed non nibh lobortis, blandit dui sit amet, finibus dui.',
+      priority: 3,
     }
   },
   columns: {
