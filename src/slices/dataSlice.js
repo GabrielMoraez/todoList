@@ -1,5 +1,5 @@
 import { createSlice, current } from '@reduxjs/toolkit';
-import data from '../data'
+import data from '../dummyData/data'
 
 const initialState = data
 
@@ -20,6 +20,24 @@ export const dataSlice = createSlice({
     },
     editTask: (state, {payload}) => {
       state.tasks[payload.taskId] = payload.editedTask
+      return state
+    },
+    createColumn: (state, {payload}) => {
+      state.columns[payload.newColumn.id] = payload.newColumn
+      state.columnOrder.push(payload.newColumn.id)
+    },
+    deleteColumn: (state, {payload}) => {
+      const columnTasks = state.columns[payload.columnId].taskIds
+      delete state.columns[payload.columnId]
+      columnTasks.forEach((taskId) => {
+        delete state.tasks[taskId]
+      })
+      const index = state.columnOrder.indexOf(payload.columnId)
+      state.columnOrder.splice(index, 1)
+      return state
+    },
+    editColumn: (state, {payload}) => {
+      state.columns[payload.columnId] = payload.editedColumn
       return state
     },
     updateData: (state, { payload }) => {
@@ -46,6 +64,6 @@ export const dataSlice = createSlice({
 });
 
 
-export const { createNewTask, deleteTask, editTask, updateData } = dataSlice.actions
+export const { createNewTask, deleteTask, editTask, updateData, createColumn, deleteColumn, editColumn } = dataSlice.actions
 
 export default dataSlice.reducer

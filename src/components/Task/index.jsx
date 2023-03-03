@@ -23,7 +23,7 @@ export default function Task({task, index, columnId}) {
     setTaskCollapse(!taskCollapse)
   }
 
-  function MyVerticallyCenteredModal(props) {
+  function EditTaskModal(props) {
     const [taskTitle, setTaskTitle] = useState(props.task.title)
     const [taskDescription, setTaskDescription] = useState(props.task.description)
 
@@ -105,7 +105,7 @@ export default function Task({task, index, columnId}) {
           </div>
         )}
       </Draggable>
-      <MyVerticallyCenteredModal
+      <EditTaskModal
         show={taskCollapse}
         onHide={() => setTaskCollapse(false)}
         task={task}
