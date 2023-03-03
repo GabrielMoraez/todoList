@@ -9,8 +9,9 @@ import { createNewTask, deleteColumn, editColumn} from '../../slices/dataSlice'
 import Task from '../Task'
 
 import './style.scss'
+import config from '../../dummyData/config'
 
-export default function Column({title, columnId, tasks}) {
+export default function Column({title, column, tasks}) {
   const [menuCollapse, setMenuCollapse] = useState(false)
   const [showTaskCounter, setShowTaskCounter] = useState(true)
   const [taskCounter, setTaskCounter] = useState(0)
@@ -18,6 +19,8 @@ export default function Column({title, columnId, tasks}) {
 
   const data = useSelector((state) => state.data)
   const dispatch = useDispatch()
+
+  const columnId = column.id
 
   useEffect(() => {
     setTaskCounter(tasks.length)
@@ -54,12 +57,18 @@ export default function Column({title, columnId, tasks}) {
 
   function EditColumnModal(props) {
     const [columnTitle, setColumnTitle] = useState(props.title)
+    const [backgroundColor, setBackgroundColor] = useState(props.config.backgroundColor)
+    const [textColor, setTextColor] = useState(props.config.textColor)
 
     const handleEditTask = () => {
       const editedColumn = {
         id: props.columnid,
         title: columnTitle,
-        taskIds: data.columns[props.columnid].taskIds
+        taskIds: data.columns[props.columnid].taskIds,
+        config: {
+          backgroundColor: backgroundColor,
+          textColor: textColor
+        }
       }
 
       console.log(editedColumn)
@@ -83,6 +92,36 @@ export default function Column({title, columnId, tasks}) {
             />
           </Modal.Title>
         </Modal.Header>
+        <Modal.Body>
+          <div className='backgroundColorWrapper'>
+            <h6>Column Header Color</h6>
+            <div className='colorsContainer'>
+              {
+                config.backgroundColors.map((color, index) => {
+                  return (
+                    <Button key={index} className={`colorButton ${color === backgroundColor ? 'selected' : ''}`} style={{backgroundColor: color, border: 'none'}}
+                      onClick={() => setBackgroundColor(color)}
+                    />
+                  )
+                })
+              }
+            </div>
+          </div>
+          <div className='textColorWrapper'>
+            <h6>Column Text Color</h6>
+            <div className='colorsContainer'>
+              {
+                config.textColors.map((color, index) => {
+                  return (
+                    <Button key={index} className={`colorButton textColorButton ${color === textColor ? 'selected' : ''}`} style={{backgroundColor: color, border: 'none'}}
+                      onClick={() => setTextColor(color)}
+                    />
+                  )
+                })
+              }
+            </div>
+          </div>
+        </Modal.Body>
         <Modal.Footer>
           <Button onClick={handleEditTask}>Save</Button>
         </Modal.Footer>
@@ -93,7 +132,7 @@ export default function Column({title, columnId, tasks}) {
   return (
     <>
       <div className='column'>
-        <div className='column-header'>
+        <div className='column-header' style={{backgroundColor: column.config.backgroundColor, color: column.config.textColor}}>
           <h1>{showTaskCounter ? `${title} / ${taskCounter}` : title}</h1>
           <div className='column-menu-container'>
             <div className={`column-menu-icon-wrapper ${menuCollapse && 'active'}`}  onClick={handleToggleMenu}>
@@ -149,6 +188,7 @@ export default function Column({title, columnId, tasks}) {
         onHide={() => setColumnEditCollapse(false)}
         title={title}
         columnid={columnId}
+        config={column.config}
       />
     </>
   )

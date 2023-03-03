@@ -80,7 +80,7 @@ export default function App() {
           
               return <Column
                 key={index}
-                columnId={column.id}
+                column={column}
                 title={column.title}
                 tasks={tasks}
                 />

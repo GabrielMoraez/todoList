@@ -25,17 +25,29 @@ const data = {
     'column-1': {
       id: 'column-1',
       title: 'To do',
-      taskIds: ['task-1', 'task-2', 'task-3', 'task-4']
+      taskIds: ['task-1', 'task-2', 'task-3', 'task-4'],
+      config: {
+        backgroundColor: '#003049',
+        textColor: '#FFF'
+      }
     },
     'column-2': {
       id: 'column-2',
       title: 'Doing',
-      taskIds: []
+      taskIds: [],
+      config: {
+        backgroundColor: '#003049',
+        textColor: '#FFF'
+      }
     },
     'column-3': {
       id: 'column-3',
       title: 'Done',
-      taskIds: []
+      taskIds: [],
+      config: {
+        backgroundColor: '#003049',
+        textColor: '#FFF'
+      }
     }
   },
   columnOrder: ['column-1', 'column-2', 'column-3'],

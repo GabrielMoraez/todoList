@@ -1,13 +1,15 @@
 .column {
-  background-color: lightgray;
-  padding: 10px;
   width: 25%;
+  border-radius: 10px 10px 0px 0px;
   .column-header {
     display: flex;
     flex-direction: row;
     align-items: center;
     justify-content: space-between;
-    margin-bottom: 10px;
+    border-radius: 10px 10px 0px 0px;
+    padding: 10px;
+    background-color: red;
+    color: #FFF;
     &:hover {
       cursor: pointer;
     }
@@ -24,9 +26,11 @@
         background-color: #FFF;
         cursor: pointer;
         transition: 0.4s ease;
+        color: #000;
       }
       &.active {
         background-color: #FFF;
+        color: #000;
       }
     }
   }
@@ -37,9 +41,12 @@
   h1 {
     font-size: 16px;
     font-weight: 600;
+    margin: 0px;
   }
   .task-wrapper {
     min-height: 200px;
+    padding: 10px;
+    background-color: #F6F7FB;
   }
 }
 
@@ -52,6 +59,7 @@
   top: 35px;
   left: 0;
   background-color: #FFF;
+  color: #000;
   border-radius: 10px;
   transition: 0.3s ease;
   width: 175px;
@@ -71,6 +79,30 @@
     &:hover {
       background-color: #dedede;
       transition: 0.3s ease;
+    }
+  }
+}
+.backgroundColorWrapper {
+  margin-bottom: 16px;
+}
+.colorsContainer {
+  display: flex;
+  flex-direction: row;
+  gap: 16px;
+  .colorButton {
+    height: 30px;
+    width: 30px;
+    transition: 0.4s ease;
+    &:hover {
+      box-shadow: 0px 10px 15px -3px rgba(0,0,0,0.1);
+      transform: scale(1.2);
+      transition: 0.4s ease;
+    }
+    &.textColorButton {
+    border: 1px solid #000 !important;
+    }
+    &.selected {
+      border: 2px solid #3CADFF !important;;
     }
   }
 }
