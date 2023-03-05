@@ -31,7 +31,7 @@ const data = {
       title: 'To do',
       taskIds: ['task-1', 'task-2', 'task-3', 'task-4'],
       config: {
-        backgroundColor: '#003049',
+        backgroundColor: '#8e7d72',
         textColor: '#FFF'
       }
     },
@@ -40,7 +40,7 @@ const data = {
       title: 'Doing',
       taskIds: [],
       config: {
-        backgroundColor: '#003049',
+        backgroundColor: '#8e7d72',
         textColor: '#FFF'
       }
     },
@@ -49,7 +49,7 @@ const data = {
       title: 'Done',
       taskIds: [],
       config: {
-        backgroundColor: '#003049',
+        backgroundColor: '#8e7d72',
         textColor: '#FFF'
       }
     }

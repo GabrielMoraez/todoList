@@ -1,6 +1,6 @@
 .column {
   width: 25%;
-  border-radius: 10px 10px 0px 0px;
+  border-radius: 10px;
   .column-header {
     display: flex;
     flex-direction: row;
@@ -39,14 +39,17 @@
     position: relative;
   }
   h1 {
-    font-size: 16px;
+    font-size: 14px;
     font-weight: 600;
     margin: 0px;
   }
   .task-wrapper {
-    min-height: 200px;
-    padding: 10px;
+    max-height: 50vh;
+    min-height: 100px;
+    overflow: auto;
+    padding: 15px;
     background-color: #F6F7FB;
+    border-radius: 0px 0px 10px 10px;
   }
 }
 
