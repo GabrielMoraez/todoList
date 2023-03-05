@@ -74,8 +74,8 @@ export default function App() {
       <Header />
       <DragDropContext onDragEnd={onDragEnd}>
         <div className='main-container'>
-          <div className='board-menu-wrapper'>
-            <div className='board-menu-hamburger'>
+          <div className='board-side-menu-wrapper'>
+            <div className='board-side-menu-hamburger'>
               <FontAwesomeIcon size='xl' icon='bars' />
             </div>
             <div className='projects-wrapper'>
@@ -98,19 +98,71 @@ export default function App() {
               </div>
             </div>
           </div>
-          {
-            data.columnOrder.map((columnId, index) => {
-              const column = data.columns[columnId]
-              const tasks = column.taskIds.map(taskId => data.tasks[taskId])
-          
-              return <Column
-                key={index}
-                column={column}
-                title={column.title}
-                tasks={tasks}
-                />
-            })
-          }
+          <div className='project-board'>
+            <div className='board-menu-wrapper'>
+              <div className='breadcrumb'>
+                <span>Dashboard</span>/<span>Projects</span>/<span>Blablablabla</span>
+              </div>
+              <div className='board-menu-container'>
+                <div className='board-icon board-info'>
+                  <FontAwesomeIcon size='lg' icon='question-circle' />
+                </div>
+                <div className='board-icon board-like'>
+                  <FontAwesomeIcon size='lg' icon='heart' />
+                </div>
+                <div className='board-icon board-menu-icon'>
+                  <FontAwesomeIcon size='lg' icon='ellipsis' />
+                </div>
+              </div>
+            </div>
+            <div className='board-header'>
+              <div className='board-title'>
+                <h1>Gabriel's To-Do List Project</h1>
+              </div>
+              <div className='board-view-wrapper'>
+                <div className='active'>
+                  Task Board
+                </div>
+                <div>
+                  Tasks
+                </div>
+              </div>
+              {/* <div className='board-filters'>
+                <div className='contributors'> 
+                  <div>
+                    GM
+                  </div>
+                  <div>
+                    GM
+                  </div>
+                  <div>
+                    <FontAwesomeIcon size='lg' icon='plus' />
+                  </div>
+                </div>
+                <div className='filters'>
+                  <div>
+                    <FontAwesomeIcon size='lg' icon='filter' />
+                    Filter
+                  </div>
+                </div>
+              </div> */}
+            </div>
+            <div className='board-content'>
+            {
+              data.columnOrder.map((columnId, index) => {
+                const column = data.columns[columnId]
+                const tasks = column.taskIds.map(taskId => data.tasks[taskId])
+            
+                return <Column
+                  key={index}
+                  column={column}
+                  title={column.title}
+                  tasks={tasks}
+                  />
+              })
+            }
+            </div>
+          </div>
         </div>
       </DragDropContext>
     </>

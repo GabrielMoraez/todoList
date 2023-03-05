@@ -1,6 +1,7 @@
 #root {
   background-color: #E5CDBD;
   color: #636363;
+  font-family: 'Montserrat', sans-serif;
 }
 
 .main-container {
@@ -9,9 +10,115 @@
   border-radius: 15px 15px 0px 0px;
   display: flex;
   flex-direction: row;
-  justify-content: space-between;
-  font-family: sans-serif;
-  .board-menu-wrapper {
+  justify-content: start;
+  .project-board {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    flex: 1;
+    padding: 30px;
+    justify-content: space-between;
+    .board-menu-wrapper {
+      display: flex;
+      flex-direction: row;
+      justify-content: space-between;
+      .breadcrumb {
+        font-size: 14px;
+        color: #636363;
+        gap: 8px;
+        span {
+          font-weight: 600;
+          &:hover {
+            cursor: pointer;
+          }
+        }
+        &:hover {
+          cursor: default;
+        }
+      }
+      .board-menu-container {
+        display: flex;
+        flex-direction: row;
+        gap: 16px;
+        .board-icon {
+          transition: 0.4s ease;
+          &:hover {
+            cursor: pointer;
+            transition: 0.4s ease;
+            transform: scale(1.1);
+          }
+          &.board-info {
+            &:hover {
+              color: #00C9AB;
+            }
+          }
+          &.board-like {
+            &:hover {
+              color: #D94549;
+            }
+          }
+          &.board-menu-icon {
+            &:hover {
+              color: #454545;
+            }
+          }
+        }
+      }
+    }
+    .board-header {
+      display: flex;
+      flex-direction: column;
+      .board-title {
+        h1 {
+          font-size: 32px;
+          color: #454545;
+          font-weight: 700;
+        }
+      }
+      .board-view-wrapper {
+        display: flex;
+        flex-direction: row;
+        gap: 16px;
+        font-size: 12px;
+        margin: 5px;
+        div {
+          border: 1px solid #8e7d7220;
+          border-radius: 10px;
+          padding: 5px 15px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          transition: 0.4s ease;
+          height: 30px;
+          &:hover, &.active {
+            transition: 0.4s ease;
+            font-weight: 600;
+            cursor: pointer;
+            background-color: #FE8E3D;
+            border: none;
+            color: #FAFAFA;
+          }
+        }
+      }
+      .board-view-wrapper {
+        display: flex;
+        flex-direction: row;
+        gap: 16px;
+      }
+      .board-filters {
+        display: flex;
+        flex-direction: row;
+        gap: 16px;
+      }
+    }
+    .board-content {
+      margin-top: 24px;
+      display: flex;
+      flex-direction: row;
+      justify-content: space-between
+    }
+  }
+  .board-side-menu-wrapper {
     border-right: 1px solid #F2F2F2;
     width: 80px;
     padding: 25px 0px;
@@ -20,7 +127,7 @@
     justify-content: space-between;
     align-items: center;
     gap: 24px;
-    .board-menu-hamburger {
+    .board-side-menu-hamburger {
       display: flex;
       justify-content: center;
       align-items: center;
