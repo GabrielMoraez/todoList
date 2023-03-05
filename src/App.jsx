@@ -148,19 +148,23 @@ export default function App() {
               </div> */}
             </div>
             <div className='board-content'>
-            {
-              data.columnOrder.map((columnId, index) => {
-                const column = data.columns[columnId]
-                const tasks = column.taskIds.map(taskId => data.tasks[taskId])
-            
-                return <Column
-                  key={index}
-                  column={column}
-                  title={column.title}
-                  tasks={tasks}
-                  />
-              })
-            }
+              {
+                data.columnOrder.map((columnId, index) => {
+                  const column = data.columns[columnId]
+                  const tasks = column.taskIds.map(taskId => data.tasks[taskId])
+              
+                  return <Column
+                    key={index}
+                    column={column}
+                    title={column.title}
+                    tasks={tasks}
+                    />
+                })
+              }
+              <div className='add-column'>
+                <FontAwesomeIcon icon='plus' />
+                Add Column
+              </div>
             </div>
           </div>
         </div>

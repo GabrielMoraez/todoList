@@ -115,11 +115,33 @@
       margin-top: 24px;
       display: flex;
       flex-direction: row;
-      justify-content: space-between
+      justify-content: start;
+      gap: 16px;
+      .add-column {
+        display: flex;
+        flex-direction: row;
+        gap: 16px;
+        font-size: 14px;
+        background-color: #8e7d7220;
+        height: 50px;
+        width: 25%;
+        justify-content: center;
+        align-items: center;
+        font-weight: 600;
+        border-radius: 10px;
+        transition: 0.4s ease;
+        &:hover {
+          cursor: pointer;
+          background-color: #A55820;
+          color: #FAFAFA;
+          transition: 0.4s ease;
+        }
+      }
     }
   }
   .board-side-menu-wrapper {
     border-right: 1px solid #F2F2F2;
+    height: calc(100vh - 60px);
     width: 80px;
     padding: 25px 0px;
     display: flex;
@@ -143,7 +165,7 @@
         width: 40px;
         height: 40px;
         border-radius: 50px;
-        background-color: #00C9AB;
+        background-color: #8e7d72;
         color: #FFF;
         display: flex;
         align-items: center;

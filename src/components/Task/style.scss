@@ -7,21 +7,26 @@
   flex-direction: column;
   justify-content: space-between;
   position: relative;
-  box-shadow: 0px 10px 15px -3px rgba(0,0,0,0.1);
+  box-shadow: -2px 4px 5px 0px rgba(0,0,0,0.1);
+  border: 1px solid #8e7d7220;
+  border-radius: 5px;
   .task-header {
     display: flex;
     justify-content: space-between;
-    border-bottom: 1px solid;
     padding: 10px 0px;
-    font-size: 18px;
+    font-size: 14px;
+    color: #454545;
+    font-weight: 600;
+    .task-menu-wrapper {
+      color: #8D8D8D;
+    }
   }
   .task-body {
-    padding: 10px;
-    font-size: 14px;
+    font-size: 12px;
+    margin-top: 10px;
   }
   .task-priority {
     font-size: 14px;
-    margin-top: 10px;
     gap: 8px;
     display: flex;
     flex-direction: row;
@@ -31,6 +36,8 @@
       display: flex;
       align-items: center;
       justify-content: center;
+      font-size: 12px;
+      color: #454545;
       &.Low {
         background-color: lightgreen;
       }
@@ -39,6 +46,7 @@
       }
       &.High {
         background-color: red;
+        color: #FFF;
         font-weight: bold;
       }
     }

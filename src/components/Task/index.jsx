@@ -104,7 +104,7 @@ export default function Task({task, index, columnId}) {
           >
             <div className='task-header'>
               {task.title}
-              <div onClick={() => setMenuCollapse(!menuCollapse)}>
+              <div onClick={() => setMenuCollapse(!menuCollapse)} className='task-menu-wrapper'>
                 <FontAwesomeIcon size='lg' icon="fa-solid fa-ellipsis" />
               </div>
               {menuCollapse && (
@@ -123,7 +123,6 @@ export default function Task({task, index, columnId}) {
               )}
             </div>
             <div className='task-priority'>
-              Priority: 
               <span className={`priority-label ${PRIORITY[task.priority]}`}>{PRIORITY[task.priority]}</span>
             </div>
             <div className='task-body'>
