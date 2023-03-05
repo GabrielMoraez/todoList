@@ -13,9 +13,35 @@
     justify-content: space-between;
     border-bottom: 1px solid;
     padding: 10px 0px;
+    font-size: 18px;
   }
   .task-body {
     padding: 10px;
+    font-size: 14px;
+  }
+  .task-priority {
+    font-size: 14px;
+    margin-top: 10px;
+    gap: 8px;
+    display: flex;
+    flex-direction: row;
+    .priority-label {
+      padding: 0px 10px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      &.Low {
+        background-color: lightgreen;
+      }
+      &.Medium {
+        background-color: yellow;
+      }
+      &.High {
+        background-color: red;
+        font-weight: bold;
+      }
+    }
   }
 }
 
