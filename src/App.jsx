@@ -3,7 +3,7 @@ import { DragDropContext } from 'react-beautiful-dnd'
 import { useSelector, useDispatch } from 'react-redux'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 
-import { updateData, createColumn } from './slices/dataSlice'
+import { updateData, createColumn, createBoard, setActiveBoard } from './slices/dataSlice'
 import Column from './components/Column'
 import Header from './components/Header'
 import BoardIcon from './components/boardIcon'
@@ -18,7 +18,7 @@ export default function App() {
 
   console.log(data.boards[activeBoard])
   
-  const columnIds = data.boards[activeBoard].columnOrder
+  const columnIds = data.boards[activeBoard].columnOrder || []
 
   const boardsIds = Object.keys(data.boards)
 
@@ -39,6 +39,18 @@ export default function App() {
 
     dispatch(createColumn({newColumn}))
 
+  }
+
+  const handleCreateBoard = () => {
+    const newBoard = {
+      id: `board-${boardsIds.length + 1}`,
+      title: 'New Board',
+      tasks: [],
+      columns: [],
+      columnOrder: [],
+    }
+    dispatch(createBoard({newBoard}))
+    dispatch(setActiveBoard({ boardId: newBoard.id }))
   }
   
   const onDragEnd = result => {
@@ -113,7 +125,7 @@ export default function App() {
                   <BoardIcon activeBoardId={activeBoard} key={board} boardId={board} board={data.boards[board]} />
                 ))
               }
-              <div className='add-project-icon'>
+              <div className='add-project-icon' onClick={handleCreateBoard}>
                 <FontAwesomeIcon size='lg' icon='plus' />
               </div>
             </div>

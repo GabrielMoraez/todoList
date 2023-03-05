@@ -47,6 +47,18 @@ export const dataSlice = createSlice({
       }
       return state
     },
+    createBoard: (state, { payload }) => {
+      state = {
+        ...state,
+        boards: {
+          ...state.boards,
+          [payload.newBoard.id]: payload.newBoard,
+        }
+      }
+
+
+      return state
+    },
     updateData: (state, { payload }) => {
       state = {
         ...state,
@@ -73,7 +85,7 @@ export const dataSlice = createSlice({
 
 export const {
   createNewTask, deleteTask, editTask, updateData, createColumn,
-  deleteColumn, editColumn, setActiveBoard
+  deleteColumn, editColumn, setActiveBoard, createBoard
 } = dataSlice.actions
 
 export default dataSlice.reducer
