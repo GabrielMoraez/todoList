@@ -1,31 +1,10 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { createColumn } from '../../slices/dataSlice'
-import { useSelector, useDispatch } from 'react-redux'
 
 import Logo from '../../assets/symbol-2.png'
 
 import './style.scss'
 
 export default function Header() {
-  const data = useSelector((state) => state.data)
-  const dispatch = useDispatch()
-
-  const columnIds = data.columnOrder
-
-  const handleCreateColumn = () => {
-    const sortedIds = [...columnIds].sort()
-    const lastColumnId = sortedIds[columnIds.length - 1]
-    const newColumnId = `column-${Number((lastColumnId).split('-')[1]) + 1}`
-
-    const newColumn = {
-      id: newColumnId,
-      title: 'New Column',
-      taskIds: []
-    }
-
-    dispatch(createColumn({newColumn}))
-
-  }
   return (
     <div className='header'>
       <div className='logo-menu-wrapper'>

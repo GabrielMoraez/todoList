@@ -3,7 +3,7 @@ import { DragDropContext } from 'react-beautiful-dnd'
 import { useSelector, useDispatch } from 'react-redux'
 
 import Column from './components/Column'
-import { updateData } from './slices/dataSlice'
+import { updateData, createColumn } from './slices/dataSlice'
 import './style.scss'
 import Header from './components/Header'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
@@ -11,6 +11,27 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 export default function App() {
   const dispatch = useDispatch()
   const data = useSelector(state => state.data)
+  
+  const columnIds = data.columnOrder
+
+  const handleCreateColumn = () => {
+    const sortedIds = [...columnIds].sort()
+    const lastColumnId = sortedIds[columnIds.length - 1]
+    const newColumnId = `column-${Number((lastColumnId).split('-')[1]) + 1}`
+
+    const newColumn = {
+      id: newColumnId,
+      title: 'New Column',
+      taskIds: [],
+      config: {
+        backgroundColor: '#8e7d72',
+        textColor: '#FFF'
+      }
+    }
+
+    dispatch(createColumn({newColumn}))
+
+  }
   
   const onDragEnd = result => {
     const { destination, source, draggableId } = result
@@ -161,7 +182,7 @@ export default function App() {
                     />
                 })
               }
-              <div className='add-column'>
+              <div className='add-column' onClick={handleCreateColumn}>
                 <FontAwesomeIcon icon='plus' />
                 Add Column
               </div>
