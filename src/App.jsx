@@ -1,18 +1,26 @@
 import React, { useEffect } from 'react'
 import { DragDropContext } from 'react-beautiful-dnd'
 import { useSelector, useDispatch } from 'react-redux'
-
-import Column from './components/Column'
-import { updateData, createColumn } from './slices/dataSlice'
-import './style.scss'
-import Header from './components/Header'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+
+import { updateData, createColumn } from './slices/dataSlice'
+import Column from './components/Column'
+import Header from './components/Header'
+import BoardIcon from './components/boardIcon'
+
+import './style.scss'
 
 export default function App() {
   const dispatch = useDispatch()
   const data = useSelector(state => state.data)
   
-  const columnIds = data.columnOrder
+  const activeBoard = data.activeBoard
+
+  console.log(data.boards[activeBoard])
+  
+  const columnIds = data.boards[activeBoard].columnOrder
+
+  const boardsIds = Object.keys(data.boards)
 
   const handleCreateColumn = () => {
     const sortedIds = [...columnIds].sort()
@@ -44,7 +52,7 @@ export default function App() {
     }
     
     if (destination.droppableId === source.droppableId) {
-      const column = data.columns[source.droppableId]
+      const column = data.boards[activeBoard].columns[source.droppableId]
       const tasks = Array.from(column.taskIds)
   
       tasks.splice(source.index, 1)
@@ -55,15 +63,15 @@ export default function App() {
         taskIds: tasks
       }
     
-      dispatch(updateData({newColumn}))
+      dispatch(updatedata.boards({newColumn}))
 
       return
     }
 
-    const sourceColumn = data.columns[source.droppableId]
+    const sourceColumn = data.boards[activeBoard].columns[source.droppableId]
     const sourceTasks = Array.from(sourceColumn.taskIds)
 
-    const destinationColumn = data.columns[destination.droppableId]
+    const destinationColumn = data.boards[activeBoard].columns[destination.droppableId]
     const destinationTasks = Array.from(destinationColumn.taskIds)
 
     sourceTasks.splice(source.index, 1)
@@ -79,15 +87,15 @@ export default function App() {
     }
 
     const newState = {
-      ...data,
+      ...data.boards,
       columns: {
-        ...data.columns,
+        ...data.boards[activeBoard].columns,
         [newColumn.id]: newColumn,
         [oldColumn.id]: oldColumn,
       },
     }
 
-    dispatch(updateData({newColumn, oldColumn}))
+    dispatch(updatedata.boards({newColumn, oldColumn}))
   }
 
   return (
@@ -100,15 +108,11 @@ export default function App() {
               <FontAwesomeIcon size='xl' icon='bars' />
             </div>
             <div className='projects-wrapper'>
-              <div className='project-icon'>
-                GM
-              </div>
-              <div className='project-icon'>
-                GM
-              </div>
-              <div className='project-icon'>
-                GM
-              </div>
+              {
+                boardsIds.map((board) => (
+                  <BoardIcon activeBoardId={activeBoard} key={board} boardId={board} board={data.boards[board]} />
+                ))
+              }
               <div className='add-project-icon'>
                 <FontAwesomeIcon size='lg' icon='plus' />
               </div>
@@ -122,7 +126,7 @@ export default function App() {
           <div className='project-board'>
             <div className='board-menu-wrapper'>
               <div className='breadcrumb'>
-                <span>Dashboard</span>/<span>Projects</span>/<span>Blablablabla</span>
+                <span>Dashboard</span>/<span>Projects</span>/<span>{data.boards[activeBoard].title}</span>
               </div>
               <div className='board-menu-container'>
                 <div className='board-icon board-info'>
@@ -138,7 +142,7 @@ export default function App() {
             </div>
             <div className='board-header'>
               <div className='board-title'>
-                <h1>Gabriel's To-Do List Project</h1>
+                <h1>{data.boards[activeBoard].title}</h1>
               </div>
               <div className='board-view-wrapper'>
                 <div className='active'>
@@ -170,10 +174,12 @@ export default function App() {
             </div>
             <div className='board-content'>
               {
-                data.columnOrder.map((columnId, index) => {
-                  const column = data.columns[columnId]
-                  const tasks = column.taskIds.map(taskId => data.tasks[taskId])
-              
+                data.boards[activeBoard].columnOrder.map((columnId, index) => {
+                  let column = {}
+                  let tasks = Array
+                  column = data.boards[activeBoard].columns[columnId]
+                  tasks = column.taskIds.map(taskId => data.boards[activeBoard].tasks[taskId])
+                  console.log(column)
                   return <Column
                     key={index}
                     column={column}

@@ -17,6 +17,8 @@ export default function Column({title, column, tasks}) {
   const [taskCounter, setTaskCounter] = useState(0)
   const [columnEditCollapse, setColumnEditCollapse] = useState(false)
 
+  console.log(tasks)
+
   const data = useSelector((state) => state.data)
   const dispatch = useDispatch()
 
