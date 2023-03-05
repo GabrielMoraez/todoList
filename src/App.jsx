@@ -6,6 +6,7 @@ import Column from './components/Column'
 import { updateData } from './slices/dataSlice'
 import './style.scss'
 import Header from './components/Header'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 
 export default function App() {
   const dispatch = useDispatch()
@@ -72,7 +73,31 @@ export default function App() {
     <>
       <Header />
       <DragDropContext onDragEnd={onDragEnd}>
-        <div className='container'>
+        <div className='main-container'>
+          <div className='board-menu-wrapper'>
+            <div className='board-menu-hamburger'>
+              <FontAwesomeIcon size='xl' icon='bars' />
+            </div>
+            <div className='projects-wrapper'>
+              <div className='project-icon'>
+                GM
+              </div>
+              <div className='project-icon'>
+                GM
+              </div>
+              <div className='project-icon'>
+                GM
+              </div>
+              <div className='add-project-icon'>
+                <FontAwesomeIcon size='lg' icon='plus' />
+              </div>
+            </div>
+            <div className='projects-config-wrapper'>
+              <div className='projects-config'>
+                <FontAwesomeIcon size='lg' icon='cog' />
+              </div>
+            </div>
+          </div>
           {
             data.columnOrder.map((columnId, index) => {
               const column = data.columns[columnId]

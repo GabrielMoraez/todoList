@@ -1,7 +1,66 @@
-.container {
+#root {
+  background-color: #E5CDBD;
+  color: #636363;
+}
+
+.main-container {
+  color: #8D8D8D;
+  background-color: #FFF;
+  border-radius: 15px 15px 0px 0px;
   display: flex;
   flex-direction: row;
-  justify-content: space-around;
+  justify-content: space-between;
   font-family: sans-serif;
-  margin-top: 50px;
+  .board-menu-wrapper {
+    border-right: 1px solid #F2F2F2;
+    width: 80px;
+    padding: 25px 0px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    gap: 24px;
+    .board-menu-hamburger {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    .projects-wrapper {
+      display: flex;
+      flex: 1;
+      flex-direction: column;
+      justify-content: start;
+      align-items: center;
+      gap: 16px;
+      .project-icon {
+        width: 40px;
+        height: 40px;
+        border-radius: 50px;
+        background-color: #00C9AB;
+        color: #FFF;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .add-project-icon {
+        color: #FFF;
+        background-color: #8D8D8D;
+        border-radius: 50px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 25px;
+        height: 25px;
+      }
+    }
+    .projects-config {
+      display: flex;
+      border: 1px solid #8e7d7220;
+      border-radius: 50px;
+      width: 40px;
+      height: 40px;
+      justify-content: center;
+      align-items: center;
+    }
+  }
 }
