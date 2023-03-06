@@ -5,33 +5,34 @@ import { useSelector, useDispatch } from 'react-redux'
 import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
 
-import { createNewTask, deleteColumn, editColumn} from '../../slices/dataSlice'
+import { deleteColumn, editColumn} from '../../slices/column/columnSlice'
+import { getTasks, createTask } from '../../slices/task/taskSlice';
+
 import Task from '../Task'
 
 import './style.scss'
 import config from '../../dummyData/config'
 
-export default function Column({title, column, tasks}) {
-  const [menuCollapse, setMenuCollapse] = useState(false)
-  const [showTaskCounter, setShowTaskCounter] = useState(true)
-  const [taskCounter, setTaskCounter] = useState(0)
+export default function Column({column}) {
+  const [menuCollapse, setMenuCollapse]             = useState(false)
+  const [showTaskCounter, setShowTaskCounter]       = useState(true)
+  const [taskCounter, setTaskCounter]               = useState(0)
   const [columnEditCollapse, setColumnEditCollapse] = useState(false)
 
-  const data = useSelector((state) => state.data)
   const dispatch = useDispatch()
 
-  const columnId = column.id
+  const tasks = useSelector(state => getTasks(state))
 
   useEffect(() => {
-    setTaskCounter(tasks.length)
-  }, [tasks])
+    setTaskCounter(column.taskIds.length)
+  }, [column, tasks])
 
   const handleToggleMenu = () => {
     setMenuCollapse(!menuCollapse)
   }
 
   const handleCreateTask = () => {
-    const tasksIds = Object.keys(data.tasks)
+    const tasksIds = Object.keys(tasks)
     const newTaskId = `task-${Number((tasksIds[tasksIds.length-1]).split('-')[1]) + 1}`
 
     const newTask = {
@@ -39,8 +40,8 @@ export default function Column({title, column, tasks}) {
       title: 'Testing creation'
     }
 
-    dispatch(createNewTask({columnId, newTask, newTaskId}))
-    handleToggleMenu()
+    dispatch(createTask({ columnId: column.id, newTask, newTaskId }))
+    setMenuCollapse(false)
   }
 
   const handleShowHideTaskCounter = () => {
@@ -48,36 +49,34 @@ export default function Column({title, column, tasks}) {
   }
 
   const handleDeleteColumn = () => {
-    dispatch(deleteColumn({columnId}))
+    dispatch(deleteColumn({ columnId: column.id }))
   }
 
   const handleCollapseEditColumn = () => {
     setColumnEditCollapse(true)
   }
 
-  function EditColumnModal(props) {
-    const [columnTitle, setColumnTitle] = useState(props.title)
-    const [backgroundColor, setBackgroundColor] = useState(props.config.backgroundColor)
-    const [textColor, setTextColor] = useState(props.config.textColor)
+  function EditColumnModal() {
+    const [columnTitle, setColumnTitle]         = useState(column.title)
+    const [backgroundColor, setBackgroundColor] = useState(column.config.backgroundColor)
+    const [textColor, setTextColor]             = useState(column.config.textColor)
 
     const handleEditTask = () => {
       const editedColumn = {
-        id: props.columnid,
+        ...column,
         title: columnTitle,
-        taskIds: data.columns[props.columnid].taskIds,
         config: {
           backgroundColor: backgroundColor,
           textColor: textColor
         }
       }
   
-      dispatch(editColumn({columnId: props.columnid, editedColumn}))
+      dispatch(editColumn({columnId: column.id, editedColumn}))
       setColumnEditCollapse(false)
     }
 
     return (
       <Modal
-        {...props}
         size="lg"
         aria-labelledby="contained-modal-title-vcenter"
         centered
@@ -131,7 +130,7 @@ export default function Column({title, column, tasks}) {
     <>
       <div className='column'>
         <div className='column-header' style={{backgroundColor: column.config.backgroundColor, color: column.config.textColor}}>
-          <h1>{showTaskCounter ? `${title} / ${taskCounter}` : title}</h1>
+          <h1>{showTaskCounter ? `${column.title} / ${taskCounter}` : column.title}</h1>
           <div className='column-menu-container'>
             <div className={`column-menu-icon-wrapper ${menuCollapse && 'active'}`}  onClick={handleToggleMenu}>
               <FontAwesomeIcon size='lg' icon="fa-solid fa-ellipsis" />
@@ -159,7 +158,7 @@ export default function Column({title, column, tasks}) {
             )}
           </div>
         </div>
-        <Droppable droppableId={columnId}>
+        <Droppable droppableId={column.id}>
           {provided => (
             <div
               ref={provided.innerRef}
@@ -167,12 +166,12 @@ export default function Column({title, column, tasks}) {
               className='task-wrapper'
             >
               {
-                tasks.map((task, index) => 
+                column.taskIds.map((taskId, index) => 
                   <Task
-                    key={task.id}
-                    task={task}
+                    key={taskId}
+                    task={tasks[taskId]}
                     index={index}
-                    columnId={columnId}
+                    columnId={column.id}
                   />
                 )
               }
@@ -184,9 +183,6 @@ export default function Column({title, column, tasks}) {
       <EditColumnModal
         show={columnEditCollapse}
         onHide={() => setColumnEditCollapse(false)}
-        title={title}
-        columnid={columnId}
-        config={column.config}
       />
     </>
   )

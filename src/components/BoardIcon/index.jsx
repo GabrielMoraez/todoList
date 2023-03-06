@@ -1,11 +1,13 @@
-import { useDispatch } from 'react-redux'
-import { setActiveBoard } from '../../slices/dataSlice'
+import { useDispatch, useSelector } from 'react-redux'
+
+import { getBoard, setActiveBoard } from '../../slices/board/boardSlice'
 
 import './style.scss'
 
 
-export default function BoardIcon({ boardId, board, activeBoardId }) {
+export default function BoardIcon({ boardId, activeBoardId }) {
   const dispatch = useDispatch()
+  const board = useSelector(state => getBoard(state, boardId))
 
   const changeActiveBoard = () => {
     dispatch(setActiveBoard({ boardId }))

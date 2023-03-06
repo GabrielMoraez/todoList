@@ -2,33 +2,40 @@ import React, { useEffect, useState } from 'react'
 import { DragDropContext } from 'react-beautiful-dnd'
 import { useSelector, useDispatch } from 'react-redux'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import Button from 'react-bootstrap/Button';
+import Modal from 'react-bootstrap/Modal';
 
-import { updateData, createColumn, createBoard, setActiveBoard, deleteBoard, editBoard } from './slices/dataSlice'
+import { getColumns, createColumn, updateData  } from './slices/column/columnSlice';
+import { getActiveBoard, createBoard, setActiveBoard, deleteBoard, editBoard, getBoardsIds, changeBoardColumns } from './slices/board/boardSlice';
 import Column from './components/Column'
 import Header from './components/Header'
 import BoardIcon from './components/boardIcon'
 
 import './style.scss'
-import Button from 'react-bootstrap/Button';
-import Modal from 'react-bootstrap/Modal';
+
 
 export default function App() {
   const [collapseBoardMenu, setCollapseBoardMenu] = useState(false)
-  const [showBoardEdit, setShowBoardEdit] = useState(false)
+  const [showBoardEdit, setShowBoardEdit]         = useState(false)
+
   const dispatch = useDispatch()
-  const data = useSelector(state => state.data)
   
-  const activeBoard = data.activeBoard
-
-  console.log(data.boards, activeBoard)
-  
-  const columnIds = data.boards[activeBoard].columnOrder || []
-
-  const boardsIds = Object.keys(data.boards)
+  const activeBoard = useSelector(state => getActiveBoard(state))
+  const columns     = useSelector(state => getColumns(state))
+  const boardsIds   = useSelector(state => getBoardsIds(state))
+  const columnIds   = activeBoard.columns || []
 
   const handleCreateColumn = () => {
-    const sortedIds = [...columnIds].sort()
-    const lastColumnId = sortedIds[columnIds.length - 1]
+    const sortedIds = Object.keys(columns).sort((a, b) => {
+      const aNum = parseInt(a.replace('column-', ''));
+      const bNum = parseInt(b.replace('column-', ''));
+
+      return aNum !== bNum 
+      ? aNum - bNum 
+      : a < b ? -1 : a > b ? 1 : 0;
+    })
+
+    const lastColumnId = sortedIds[sortedIds.length - 1]
     const newColumnId = `column-${Number((lastColumnId).split('-')[1]) + 1}`
 
     const newColumn = {
@@ -41,7 +48,13 @@ export default function App() {
       }
     }
 
-    dispatch(createColumn({newColumn}))
+
+    dispatch(createColumn({newColumn, boardId: activeBoard.id}))
+    dispatch(changeBoardColumns({
+      operation: 'create',
+      boardId: activeBoard.id,
+      columnId: newColumnId
+    }))
 
   }
 
@@ -49,23 +62,18 @@ export default function App() {
     const newBoard = {
       id: `board-${boardsIds.length + 1}`,
       title: 'New Board',
-      tasks: [],
       columns: [],
-      columnOrder: [],
     }
     dispatch(createBoard({newBoard}))
     dispatch(setActiveBoard({ boardId: newBoard.id }))
   }
 
   const handleDeleteBoard = () => {
-    const index = boardsIds.indexOf(activeBoard)
-    boardsIds.splice(index, 1)
-
+    boardsIds.splice(boardsIds.indexOf(activeBoard.id), 1)
     const newActiveBoard = boardsIds[0]
-    console.log(newActiveBoard)
     dispatch(setActiveBoard({ boardId: newActiveBoard }))
 
-    dispatch(deleteBoard({ boardId: activeBoard }))
+    dispatch(deleteBoard({ boardId: activeBoard.id }))
   }
 
   const handleOpenBoardEdit = () => {
@@ -83,7 +91,7 @@ export default function App() {
     }
     
     if (destination.droppableId === source.droppableId) {
-      const column = data.boards[activeBoard].columns[source.droppableId]
+      const column = activeBoard.columns[source.droppableId]
       const tasks = Array.from(column.taskIds)
   
       tasks.splice(source.index, 1)
@@ -99,10 +107,10 @@ export default function App() {
       return
     }
 
-    const sourceColumn = data.boards[activeBoard].columns[source.droppableId]
+    const sourceColumn = activeBoard.columns[source.droppableId]
     const sourceTasks = Array.from(sourceColumn.taskIds)
 
-    const destinationColumn = data.boards[activeBoard].columns[destination.droppableId]
+    const destinationColumn = activeBoard.columns[destination.droppableId]
     const destinationTasks = Array.from(destinationColumn.taskIds)
 
     sourceTasks.splice(source.index, 1)
@@ -134,14 +142,11 @@ export default function App() {
 
     const handleEditBoard = () => {
       const editedBoard = {
-        id: activeBoard,
+        ...activeBoard,
         title: boardTitle,
-        tasks: data.boards[activeBoard].tasks,
-        columns: data.boards[activeBoard].columns,
-        columnOrder: data.boards[activeBoard].columnOrder,
       }
   
-      dispatch(editBoard({boardId: activeBoard, editedBoard}))
+      dispatch(editBoard({boardId: activeBoard.id, editedBoard}))
       setShowBoardEdit(false)
     }
 
@@ -178,8 +183,8 @@ export default function App() {
             </div>
             <div className='projects-wrapper'>
               {
-                boardsIds.map((board) => (
-                  <BoardIcon activeBoardId={activeBoard} key={board} boardId={board} board={data.boards[board]} />
+                boardsIds.map((boardId) => (
+                  <BoardIcon activeBoardId={activeBoard.id} key={boardId} boardId={boardId} />
                 ))
               }
               <div className='add-project-icon' onClick={handleCreateBoard}>
@@ -195,7 +200,7 @@ export default function App() {
           <div className='project-board'>
             <div className='board-menu-wrapper'>
               <div className='breadcrumb'>
-                <span>Dashboard</span>/<span>Projects</span>/<span>{data.boards[activeBoard].title}</span>
+                <span>Dashboard</span>/<span>Projects</span>/<span>{activeBoard.title}</span>
               </div>
               <div className='board-menu-container'>
                 <div className='board-icon board-info'>
@@ -227,7 +232,7 @@ export default function App() {
             </div>
             <div className='board-header'>
               <div className='board-title'>
-                <h1>{data.boards[activeBoard].title}</h1>
+                <h1>{activeBoard.title}</h1>
               </div>
               <div className='board-view-wrapper'>
                 <div className='active'>
@@ -259,19 +264,13 @@ export default function App() {
             </div>
             <div className='board-content'>
               {
-                data.boards[activeBoard].columnOrder.map((columnId, index) => {
-                  let column = {}
-                  let tasks = Array
-                  column = data.boards[activeBoard].columns[columnId]
-                  tasks = column.taskIds.map(taskId => data.boards[activeBoard].tasks[taskId])
-                  return <Column
-                    key={index}
-                    column={column}
-                    title={column.title}
-                    tasks={tasks}
-                    />
-                })
-              }
+                activeBoard.columns.map(columnId => (
+                  <Column
+                    key={columnId}
+                    column={columns[columnId]}
+                  />
+                )
+              )}
               <div className='add-column' onClick={handleCreateColumn}>
                 <FontAwesomeIcon icon='plus' />
                 Add Column
@@ -283,7 +282,7 @@ export default function App() {
       <EditBoardModal
         show={showBoardEdit}
         onHide={() => setShowBoardEdit(false)}
-        title={data.boards[activeBoard].title}
+        title={activeBoard.title}
       />
     </>
   )
