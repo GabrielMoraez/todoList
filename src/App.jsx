@@ -3,15 +3,18 @@ import { DragDropContext } from 'react-beautiful-dnd'
 import { useSelector, useDispatch } from 'react-redux'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 
-import { updateData, createColumn, createBoard, setActiveBoard, deleteBoard } from './slices/dataSlice'
+import { updateData, createColumn, createBoard, setActiveBoard, deleteBoard, editBoard } from './slices/dataSlice'
 import Column from './components/Column'
 import Header from './components/Header'
 import BoardIcon from './components/boardIcon'
 
 import './style.scss'
+import Button from 'react-bootstrap/Button';
+import Modal from 'react-bootstrap/Modal';
 
 export default function App() {
   const [collapseBoardMenu, setCollapseBoardMenu] = useState(false)
+  const [showBoardEdit, setShowBoardEdit] = useState(false)
   const dispatch = useDispatch()
   const data = useSelector(state => state.data)
   
@@ -64,6 +67,10 @@ export default function App() {
 
     dispatch(deleteBoard({ boardId: activeBoard }))
   }
+
+  const handleOpenBoardEdit = () => {
+    setShowBoardEdit(true)
+  }
   
   const onDragEnd = result => {
     const { destination, source, draggableId } = result
@@ -87,7 +94,7 @@ export default function App() {
         taskIds: tasks
       }
     
-      dispatch(updatedata.boards({newColumn}))
+      dispatch(updateData({newColumn}))
 
       return
     }
@@ -119,7 +126,45 @@ export default function App() {
       },
     }
 
-    dispatch(updatedata.boards({newColumn, oldColumn}))
+    dispatch(updateData({newColumn, oldColumn}))
+  }
+
+  const EditBoardModal = (props) => {
+    const [boardTitle, setBoardTitle] = useState(props.title)
+
+    const handleEditBoard = () => {
+      const editedBoard = {
+        id: activeBoard,
+        title: boardTitle,
+        tasks: data.boards[activeBoard].tasks,
+        columns: data.boards[activeBoard].columns,
+        columnOrder: data.boards[activeBoard].columnOrder,
+      }
+  
+      dispatch(editBoard({boardId: activeBoard, editedBoard}))
+      setShowBoardEdit(false)
+    }
+
+    return (
+      <Modal
+        {...props}
+        size="lg"
+        aria-labelledby="contained-modal-title-vcenter"
+        centered
+      >
+        <Modal.Header closeButton>
+          <Modal.Title id="contained-modal-title-vcenter">
+            <input
+              value={boardTitle}
+              onChange={(e) => setBoardTitle(e.target.value)}
+            />
+          </Modal.Title>
+        </Modal.Header>
+        <Modal.Footer>
+          <Button onClick={handleEditBoard}>Save</Button>
+        </Modal.Footer>
+      </Modal>
+    );
   }
 
   return (
@@ -168,6 +213,12 @@ export default function App() {
                       <li onClick={handleDeleteBoard}>
                         <FontAwesomeIcon size='sm' icon="fa-solid fa-trash" />
                         {'Delete Board'}
+                      </li>
+                    </ul>
+                    <ul>
+                      <li onClick={handleOpenBoardEdit}>
+                        <FontAwesomeIcon size='sm' icon="fa-solid fa-pencil" />
+                        {'Edit Board'}
                       </li>
                     </ul>
                   </div>
@@ -229,6 +280,11 @@ export default function App() {
           </div>
         </div>
       </DragDropContext>
+      <EditBoardModal
+        show={showBoardEdit}
+        onHide={() => setShowBoardEdit(false)}
+        title={data.boards[activeBoard].title}
+      />
     </>
   )
 }
