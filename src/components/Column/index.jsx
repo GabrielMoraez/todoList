@@ -17,8 +17,6 @@ export default function Column({title, column, tasks}) {
   const [taskCounter, setTaskCounter] = useState(0)
   const [columnEditCollapse, setColumnEditCollapse] = useState(false)
 
-  console.log(tasks)
-
   const data = useSelector((state) => state.data)
   const dispatch = useDispatch()
 
@@ -72,8 +70,6 @@ export default function Column({title, column, tasks}) {
           textColor: textColor
         }
       }
-
-      console.log(editedColumn)
   
       dispatch(editColumn({columnId: props.columnid, editedColumn}))
       setColumnEditCollapse(false)

@@ -1,9 +1,9 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { DragDropContext } from 'react-beautiful-dnd'
 import { useSelector, useDispatch } from 'react-redux'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 
-import { updateData, createColumn, createBoard, setActiveBoard } from './slices/dataSlice'
+import { updateData, createColumn, createBoard, setActiveBoard, deleteBoard } from './slices/dataSlice'
 import Column from './components/Column'
 import Header from './components/Header'
 import BoardIcon from './components/boardIcon'
@@ -11,12 +11,13 @@ import BoardIcon from './components/boardIcon'
 import './style.scss'
 
 export default function App() {
+  const [collapseBoardMenu, setCollapseBoardMenu] = useState(false)
   const dispatch = useDispatch()
   const data = useSelector(state => state.data)
   
   const activeBoard = data.activeBoard
 
-  console.log(data.boards[activeBoard])
+  console.log(data.boards, activeBoard)
   
   const columnIds = data.boards[activeBoard].columnOrder || []
 
@@ -51,6 +52,17 @@ export default function App() {
     }
     dispatch(createBoard({newBoard}))
     dispatch(setActiveBoard({ boardId: newBoard.id }))
+  }
+
+  const handleDeleteBoard = () => {
+    const index = boardsIds.indexOf(activeBoard)
+    boardsIds.splice(index, 1)
+
+    const newActiveBoard = boardsIds[0]
+    console.log(newActiveBoard)
+    dispatch(setActiveBoard({ boardId: newActiveBoard }))
+
+    dispatch(deleteBoard({ boardId: activeBoard }))
   }
   
   const onDragEnd = result => {
@@ -147,9 +159,19 @@ export default function App() {
                 <div className='board-icon board-like'>
                   <FontAwesomeIcon size='lg' icon='heart' />
                 </div>
-                <div className='board-icon board-menu-icon'>
+                <div className='board-icon board-menu-icon' onClick={() => setCollapseBoardMenu(!collapseBoardMenu)}>
                   <FontAwesomeIcon size='lg' icon='ellipsis' />
                 </div>
+                {collapseBoardMenu && (
+                  <div className='column-menu'>
+                    <ul>
+                      <li onClick={handleDeleteBoard}>
+                        <FontAwesomeIcon size='sm' icon="fa-solid fa-trash" />
+                        {'Delete Board'}
+                      </li>
+                    </ul>
+                  </div>
+                )}
               </div>
             </div>
             <div className='board-header'>
@@ -191,7 +213,6 @@ export default function App() {
                   let tasks = Array
                   column = data.boards[activeBoard].columns[columnId]
                   tasks = column.taskIds.map(taskId => data.boards[activeBoard].tasks[taskId])
-                  console.log(column)
                   return <Column
                     key={index}
                     column={column}
