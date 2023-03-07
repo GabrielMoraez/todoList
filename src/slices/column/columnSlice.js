@@ -15,6 +15,7 @@ export const columnSlice = createSlice({
       return state
     },
     deleteColumn: (state, {payload}) => {
+      // TODO Ajustar esse codigo para deletar a coluna e as tasks da coluna 
       const columnTasks = state.columns[payload.columnId].taskIds
       delete state.columns[payload.columnId]
       columnTasks.forEach((taskId) => {

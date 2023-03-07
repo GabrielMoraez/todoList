@@ -40,12 +40,20 @@ export const boardSlice = createSlice({
       return state
     },
     changeBoardColumns: (state, { payload }) => {
-      if (payload.operation == 'delete') {
-        state.data[payload.boardId].columns = state.data[payload.boardId].columns.filter(column => column.id!= payload.columnId)
-      } else {
-        state.data[payload.boardId].columns.push(payload.columnId)
+      const { typeOfOperation, targetBoardId, columnId } = payload
+      const targetBoard = state.data[targetBoardId]
+      const columnIndex = targetBoard.columns.findIndex(column => column.id === columnId)
+    
+      switch (typeOfOperation) {
+        case 'delete':
+          targetBoard.columns.splice(columnIndex, 1)
+          break
+        default:
+          targetBoard.columns.push(columnId)
+          break
       }
-      return state
+    
+      return state;
     },
     changeBoardTasks: (state, { payload }) => {
       if (payload.operation == 'delete') {

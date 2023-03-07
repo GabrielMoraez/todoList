@@ -23,7 +23,6 @@ export default function App() {
   const activeBoard = useSelector(state => getActiveBoard(state))
   const columns     = useSelector(state => getColumns(state))
   const boardsIds   = useSelector(state => getBoardsIds(state))
-  const columnIds   = activeBoard.columns || []
 
   const handleCreateColumn = () => {
     const sortedIds = Object.keys(columns).sort((a, b) => {
@@ -51,8 +50,8 @@ export default function App() {
 
     dispatch(createColumn({newColumn, boardId: activeBoard.id}))
     dispatch(changeBoardColumns({
-      operation: 'create',
-      boardId: activeBoard.id,
+      operationType: 'create',
+      targetBoardId: activeBoard.id,
       columnId: newColumnId
     }))
 
@@ -268,6 +267,7 @@ export default function App() {
                   <Column
                     key={columnId}
                     column={columns[columnId]}
+                    boardId={activeBoard.id}
                   />
                 )
               )}

@@ -2,18 +2,19 @@ import { useEffect, useRef, useState } from 'react'
 import { Droppable } from 'react-beautiful-dnd'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { useSelector, useDispatch } from 'react-redux'
-import Button from 'react-bootstrap/Button';
-import Modal from 'react-bootstrap/Modal';
+import Button from 'react-bootstrap/Button'
+import Modal from 'react-bootstrap/Modal'
 
 import { deleteColumn, editColumn} from '../../slices/column/columnSlice'
-import { getTasks, createTask } from '../../slices/task/taskSlice';
+import { getTasks, createTask } from '../../slices/task/taskSlice'
+import { changeBoardColumns } from '../../slices/board/boardSlice'
 
 import Task from '../Task'
 
 import './style.scss'
 import config from '../../dummyData/config'
 
-export default function Column({column}) {
+export default function Column({column, boardId}) {
   const [menuCollapse, setMenuCollapse]             = useState(false)
   const [showTaskCounter, setShowTaskCounter]       = useState(true)
   const [taskCounter, setTaskCounter]               = useState(0)
@@ -49,6 +50,11 @@ export default function Column({column}) {
   }
 
   const handleDeleteColumn = () => {
+    dispatch(changeBoardColumns({
+      operationType: 'delete',
+      targetBoardId: boardId,
+      columnId: column.id
+    }))
     dispatch(deleteColumn({ columnId: column.id }))
   }
 
