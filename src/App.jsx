@@ -6,7 +6,7 @@ import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
 
 import { getColumns, createColumn, updateData  } from './slices/column/columnSlice';
-import { getActiveBoard, createBoard, setActiveBoard, deleteBoard, editBoard, getBoardsIds, changeBoardColumns, fullDeleteBoard } from './slices/board/boardSlice';
+import { getActiveBoard, createBoard, setActiveBoard, deleteBoard, editBoard, getBoardsIds, changeBoardColumns, fullDeleteBoard, createBoardThunk } from './slices/board/boardSlice';
 import Column from './components/Column'
 import Header from './components/Header'
 import BoardIcon from './components/boardIcon'
@@ -58,13 +58,7 @@ export default function App() {
   }
 
   const handleCreateBoard = () => {
-    const newBoard = {
-      id: `board-${boardsIds.length + 1}`,
-      title: 'New Board',
-      columns: [],
-    }
-    dispatch(createBoard({newBoard}))
-    dispatch(setActiveBoard({ boardId: newBoard.id }))
+    dispatch(createBoardThunk())
   }
 
   const handleDeleteBoard = () => {

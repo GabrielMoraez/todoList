@@ -22,8 +22,8 @@ export const boardSlice = createSlice({
     createBoard: (state, { payload }) => {
       state = {
         ...state,
-        boards: {
-          ...state.boards,
+        data: {
+          ...state.data,
           [payload.newBoard.id]: payload.newBoard,
         }
       }
@@ -93,6 +93,37 @@ export const fullDeleteBoard = createAsyncThunk(
       dispatch(deleteTask({ taskId: task }))
     })
   }
+)
+
+export const createBoardThunk = createAsyncThunk(
+  'boardSlice/createBoardThunk',
+   async (_, { dispatch, getState }) => {
+    const state = getState()
+
+    const boardsIds = Object.keys(state.boards.data)
+
+    const sortedBoardIds = boardsIds.sort((a, b) => {
+      console.log(a, b)
+      const aNum = parseInt(a.replace('board-', ''));
+      const bNum = parseInt(b.replace('board-', ''));
+
+      return aNum !== bNum 
+      ? aNum - bNum 
+      : a < b ? -1 : a > b ? 1 : 0;
+    })
+
+    const lastBoardId = sortedBoardIds[sortedBoardIds.length - 1]
+    const newBoardId  = `board-${Number((lastBoardId).split('-')[1]) + 1}`
+
+    const newBoard    = {
+      id: newBoardId,
+      title: 'New Board',
+      columns: [],
+    }
+
+    dispatch(createBoard({newBoard}))
+    dispatch(setActiveBoard({ boardId: newBoard.id }))
+   }
 )
 
 export const {
