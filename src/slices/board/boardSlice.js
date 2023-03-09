@@ -43,10 +43,10 @@ export const boardSlice = createSlice({
     changeBoardColumns: (state, { payload }) => {
       const { operationType, targetBoardId, columnId } = payload
       const targetBoard = state.data[targetBoardId]
-      const columnIndex = targetBoard.columns.indexOf(columnId)
     
       switch (operationType) {
         case 'delete':
+          const columnIndex = targetBoard.columns.indexOf(columnId)
           targetBoard.columns.splice(columnIndex, 1)
           break
         default:

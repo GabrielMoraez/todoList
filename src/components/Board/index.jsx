@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { changeBoardColumns, editBoard, fullDeleteBoard, getBoardsIds } from '../../slices/board/boardSlice'
-import { createColumn, getColumns } from '../../slices/column/columnSlice'
+import { createColumn, createColumnThunk, getColumns } from '../../slices/column/columnSlice'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import Column from '../Column'
 import Button from 'react-bootstrap/Button';
@@ -32,36 +32,7 @@ export default function Board({ board }) {
   }
 
   const handleCreateColumn = () => {
-    const sortedIds = Object.keys(columns).sort((a, b) => {
-      const aNum = parseInt(a.replace('column-', ''));
-      const bNum = parseInt(b.replace('column-', ''));
-
-      return aNum !== bNum 
-      ? aNum - bNum 
-      : a < b ? -1 : a > b ? 1 : 0;
-    })
-
-    const lastColumnId = sortedIds[sortedIds.length - 1]
-    const newColumnId = `column-${Number((lastColumnId).split('-')[1]) + 1}`
-
-    const newColumn = {
-      id: newColumnId,
-      title: 'New Column',
-      taskIds: [],
-      config: {
-        backgroundColor: '#8e7d72',
-        textColor: '#FFF'
-      }
-    }
-
-
-    dispatch(createColumn({newColumn, boardId: board.id}))
-    dispatch(changeBoardColumns({
-      operationType: 'create',
-      targetBoardId: board.id,
-      columnId: newColumnId
-    }))
-
+    dispatch(createColumnThunk({ boardId: board.id }))
   }
 
   const EditBoardModal = (props) => {
