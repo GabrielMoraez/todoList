@@ -1,5 +1,7 @@
-import { createSlice, current } from '@reduxjs/toolkit';
+import { createAsyncThunk, createSlice, current } from '@reduxjs/toolkit';
 import data from '../../dummyData/data'
+import { deleteTask } from '../task/taskSlice';
+import { changeBoardColumns } from '../board/boardSlice';
 
 const initialState = data.columns
 
@@ -15,14 +17,7 @@ export const columnSlice = createSlice({
       return state
     },
     deleteColumn: (state, {payload}) => {
-      // TODO Ajustar esse codigo para deletar a coluna e as tasks da coluna 
-      const columnTasks = state.columns[payload.columnId].taskIds
-      delete state.columns[payload.columnId]
-      columnTasks.forEach((taskId) => {
-        delete state.tasks[taskId]
-      })
-      const index = state.columnOrder.indexOf(payload.columnId)
-      state.columnOrder.splice(index, 1)
+      delete state[payload.columnId]
       return state
     },
     editColumn: (state, {payload}) => {
@@ -54,6 +49,23 @@ export const columnSlice = createSlice({
 
 // Selectors
 export const getColumns = state => state.columns
+
+
+// Thunks
+export const fullDeleteColumn = createAsyncThunk(
+  'columnSlice/fullDeleteColumn',
+  async ({ boardId, column }, { dispatch }) => {
+    const tasksToDelete = column.taskIds || []
+    
+    dispatch(changeBoardColumns({
+      operationType: 'delete',
+      targetBoardId: boardId,
+      columnId: column.id
+    }))
+    dispatch(deleteColumn({ columnId: column.id }))
+    await Promise.all(tasksToDelete.map(taskId => dispatch(deleteTask({ taskId }))))
+  }
+);
 
 export const { updateData, createColumn, deleteColumn, editColumn } = columnSlice.actions
 

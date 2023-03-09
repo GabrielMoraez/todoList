@@ -13,9 +13,7 @@ export const taskSlice = createSlice({
       return state
 		},
     deleteTask: (state, { payload }) => {
-      delete state.tasks[payload.taskId]
-      const index = state.columns[payload.columnId].taskIds.indexOf(payload.taskId)
-      state.columns[payload.columnId].taskIds.splice(index, 1)
+      delete state[payload.taskId]
       return state
     },
     editTask: (state, {payload}) => {

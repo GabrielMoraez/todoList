@@ -5,8 +5,8 @@ import { useSelector, useDispatch } from 'react-redux'
 import Button from 'react-bootstrap/Button'
 import Modal from 'react-bootstrap/Modal'
 
-import { deleteColumn, editColumn} from '../../slices/column/columnSlice'
-import { getTasks, createTask } from '../../slices/task/taskSlice'
+import { deleteColumn, editColumn, fullDeleteColumn} from '../../slices/column/columnSlice'
+import { getTasks, createTask, deleteTask } from '../../slices/task/taskSlice'
 import { changeBoardColumns } from '../../slices/board/boardSlice'
 
 import Task from '../Task'
@@ -50,12 +50,7 @@ export default function Column({column, boardId}) {
   }
 
   const handleDeleteColumn = () => {
-    dispatch(changeBoardColumns({
-      operationType: 'delete',
-      targetBoardId: boardId,
-      columnId: column.id
-    }))
-    dispatch(deleteColumn({ columnId: column.id }))
+    dispatch(fullDeleteColumn({boardId, column}))    
   }
 
   const handleCollapseEditColumn = () => {
@@ -134,7 +129,7 @@ export default function Column({column, boardId}) {
   
   return (
     <>
-      <div className='column'>
+      <div className='column-container'>
         <div className='column-header' style={{backgroundColor: column.config.backgroundColor, color: column.config.textColor}}>
           <h1>{showTaskCounter ? `${column.title} / ${taskCounter}` : column.title}</h1>
           <div className='column-menu-container'>
