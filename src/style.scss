@@ -170,6 +170,14 @@
         justify-content: center;
         width: 25px;
         height: 25px;
+        transition: 0.4s ease;
+        &:hover {
+          cursor: pointer;
+          transition: 0.4s ease;
+          transform: scale(1.2);
+          box-shadow: -2px 4px 15px -1px rgb(0 0 0 / 30%);
+          background-color: #454545;
+        }
       }
     }
     .projects-config {
