@@ -72,6 +72,7 @@ export default function App() {
 
   const handleOpenBoardEdit = () => {
     setShowBoardEdit(true)
+    setCollapseBoardMenu(false)
   }
   
   const onDragEnd = result => {

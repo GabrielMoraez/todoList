@@ -34,11 +34,10 @@ export const boardSlice = createSlice({
       return state
     },
     editBoard: (state, { payload }) => {
-      state.boards.data[payload.boardId] = {
-        ...state.boards.data[payload.boardId],
+      state.data[payload.boardId] = {
+        ...state.data[payload.boardId],
         ...payload.editedBoard
       }
-      // state.boards.data[payload.boardId] = payload.editedBoard
       return state
     },
     changeBoardColumns: (state, { payload }) => {
