@@ -1,5 +1,7 @@
-import { createSlice, current } from '@reduxjs/toolkit';
+import { createAsyncThunk, createSlice, current } from '@reduxjs/toolkit';
 import data from '../../dummyData/data'
+import { deleteColumn } from '../column/columnSlice';
+import { deleteTask } from '../task/taskSlice';
 
 const initialState = {
   data: data.boards,
@@ -28,7 +30,7 @@ export const boardSlice = createSlice({
       return state
     },
     deleteBoard: (state, { payload }) => {
-      delete state.boards[payload.boardId]
+      delete state.data[payload.boardId]
       return state
     },
     editBoard: (state, { payload }) => {
@@ -70,6 +72,28 @@ export const getActiveBoard = state => state.boards.data[state.boards.activeBoar
 export const getActiveBoardId = state => state.activeBoardId
 export const getBoardsIds = state => Object.keys(state.boards.data)
 export const getBoard = (state, boardId) => state.boards.data[boardId]
+
+// Thunks
+
+export const fullDeleteBoard = createAsyncThunk(
+  'boardSlice/fullDeleteBoard',
+  async ({ newActiveBoardId }, { dispatch, getState }) => {
+    const state = getState()
+    let boardId = state.boards.activeBoardId
+    let columns = state.boards.data[boardId].columns
+    let tasks = []
+
+    dispatch(setActiveBoard({ boardId: newActiveBoardId }))
+    dispatch(deleteBoard({ boardId }))
+    columns.forEach(column => {
+      dispatch(deleteColumn({ columnId: column}))
+      tasks.push(...state.columns[column].taskIds)
+    })
+    tasks.forEach(task => {
+      dispatch(deleteTask({ taskId: task }))
+    })
+  }
+)
 
 export const {
   setActiveBoard, createBoard, deleteBoard, editBoard, changeBoardColumns, changeBoardTasks

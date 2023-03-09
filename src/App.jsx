@@ -6,7 +6,7 @@ import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
 
 import { getColumns, createColumn, updateData  } from './slices/column/columnSlice';
-import { getActiveBoard, createBoard, setActiveBoard, deleteBoard, editBoard, getBoardsIds, changeBoardColumns } from './slices/board/boardSlice';
+import { getActiveBoard, createBoard, setActiveBoard, deleteBoard, editBoard, getBoardsIds, changeBoardColumns, fullDeleteBoard } from './slices/board/boardSlice';
 import Column from './components/Column'
 import Header from './components/Header'
 import BoardIcon from './components/boardIcon'
@@ -69,10 +69,11 @@ export default function App() {
 
   const handleDeleteBoard = () => {
     boardsIds.splice(boardsIds.indexOf(activeBoard.id), 1)
-    const newActiveBoard = boardsIds[0]
-    dispatch(setActiveBoard({ boardId: newActiveBoard }))
+    const newActiveBoardId = boardsIds[0]
+    
+    dispatch(fullDeleteBoard({ newActiveBoardId }))
+    setCollapseBoardMenu(false)
 
-    dispatch(deleteBoard({ boardId: activeBoard.id }))
   }
 
   const handleOpenBoardEdit = () => {
