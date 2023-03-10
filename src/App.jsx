@@ -1,38 +1,26 @@
-import React, { useEffect } from 'react'
+import React from 'react'
 import { DragDropContext } from 'react-beautiful-dnd'
 import { useSelector, useDispatch } from 'react-redux'
-
-import Column from './components/Column'
-import { updateData, createColumn } from './slices/dataSlice'
-import './style.scss'
+import { getColumn, getColumns, updateData  } from './slices/column/columnSlice'
+import { getActiveBoard, getBoardsIds, createBoardThunk } from './slices/board/boardSlice'
+import Board from './components/Board'
 import Header from './components/Header'
+import BoardIcon from './components/boardIcon'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+
+import './style.scss'
 
 export default function App() {
   const dispatch = useDispatch()
-  const data = useSelector(state => state.data)
   
-  const columnIds = data.columnOrder
+  const activeBoard = useSelector(state => getActiveBoard(state))
+  const boardsIds   = useSelector(state => getBoardsIds(state))
+  const columns     = useSelector(state => getColumns(state))
 
-  const handleCreateColumn = () => {
-    const sortedIds = [...columnIds].sort()
-    const lastColumnId = sortedIds[columnIds.length - 1]
-    const newColumnId = `column-${Number((lastColumnId).split('-')[1]) + 1}`
-
-    const newColumn = {
-      id: newColumnId,
-      title: 'New Column',
-      taskIds: [],
-      config: {
-        backgroundColor: '#8e7d72',
-        textColor: '#FFF'
-      }
-    }
-
-    dispatch(createColumn({newColumn}))
-
+  const handleCreateBoard = () => {
+    dispatch(createBoardThunk())
   }
-  
+
   const onDragEnd = result => {
     const { destination, source, draggableId } = result
     if (!destination) {
@@ -44,7 +32,7 @@ export default function App() {
     }
     
     if (destination.droppableId === source.droppableId) {
-      const column = data.columns[source.droppableId]
+      const column = activeBoard.columns[source.droppableId]
       const tasks = Array.from(column.taskIds)
   
       tasks.splice(source.index, 1)
@@ -60,10 +48,10 @@ export default function App() {
       return
     }
 
-    const sourceColumn = data.columns[source.droppableId]
+    const sourceColumn = columns[source.droppableId]
     const sourceTasks = Array.from(sourceColumn.taskIds)
 
-    const destinationColumn = data.columns[destination.droppableId]
+    const destinationColumn = columns[destination.droppableId]
     const destinationTasks = Array.from(destinationColumn.taskIds)
 
     sourceTasks.splice(source.index, 1)
@@ -77,16 +65,7 @@ export default function App() {
       ...destinationColumn,
       taskIds: destinationTasks
     }
-
-    const newState = {
-      ...data,
-      columns: {
-        ...data.columns,
-        [newColumn.id]: newColumn,
-        [oldColumn.id]: oldColumn,
-      },
-    }
-
+    
     dispatch(updateData({newColumn, oldColumn}))
   }
 
@@ -100,16 +79,12 @@ export default function App() {
               <FontAwesomeIcon size='xl' icon='bars' />
             </div>
             <div className='projects-wrapper'>
-              <div className='project-icon'>
-                GM
-              </div>
-              <div className='project-icon'>
-                GM
-              </div>
-              <div className='project-icon'>
-                GM
-              </div>
-              <div className='add-project-icon'>
+              { boardsIds.length ? 
+                boardsIds.map((boardId) => (
+                  <BoardIcon activeBoardId={activeBoard.id} key={boardId} boardId={boardId} />
+                )) : null
+              }
+              <div className='add-project-icon' onClick={handleCreateBoard}>
                 <FontAwesomeIcon size='lg' icon='plus' />
               </div>
             </div>
@@ -119,75 +94,10 @@ export default function App() {
               </div>
             </div>
           </div>
-          <div className='project-board'>
-            <div className='board-menu-wrapper'>
-              <div className='breadcrumb'>
-                <span>Dashboard</span>/<span>Projects</span>/<span>Blablablabla</span>
-              </div>
-              <div className='board-menu-container'>
-                <div className='board-icon board-info'>
-                  <FontAwesomeIcon size='lg' icon='question-circle' />
-                </div>
-                <div className='board-icon board-like'>
-                  <FontAwesomeIcon size='lg' icon='heart' />
-                </div>
-                <div className='board-icon board-menu-icon'>
-                  <FontAwesomeIcon size='lg' icon='ellipsis' />
-                </div>
-              </div>
-            </div>
-            <div className='board-header'>
-              <div className='board-title'>
-                <h1>Gabriel's To-Do List Project</h1>
-              </div>
-              <div className='board-view-wrapper'>
-                <div className='active'>
-                  Task Board
-                </div>
-                <div>
-                  Tasks
-                </div>
-              </div>
-              {/* <div className='board-filters'>
-                <div className='contributors'> 
-                  <div>
-                    GM
-                  </div>
-                  <div>
-                    GM
-                  </div>
-                  <div>
-                    <FontAwesomeIcon size='lg' icon='plus' />
-                  </div>
-                </div>
-                <div className='filters'>
-                  <div>
-                    <FontAwesomeIcon size='lg' icon='filter' />
-                    Filter
-                  </div>
-                </div>
-              </div> */}
-            </div>
-            <div className='board-content'>
-              {
-                data.columnOrder.map((columnId, index) => {
-                  const column = data.columns[columnId]
-                  const tasks = column.taskIds.map(taskId => data.tasks[taskId])
-              
-                  return <Column
-                    key={index}
-                    column={column}
-                    title={column.title}
-                    tasks={tasks}
-                    />
-                })
-              }
-              <div className='add-column' onClick={handleCreateColumn}>
-                <FontAwesomeIcon icon='plus' />
-                Add Column
-              </div>
-            </div>
-          </div>
+          { activeBoard?.id ?
+            <Board board={activeBoard} /> :
+            <div>criar board</div>
+          }
         </div>
       </DragDropContext>
     </>

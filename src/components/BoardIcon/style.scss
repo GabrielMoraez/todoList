@@ -1,0 +1,16 @@
+.project-board-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 50px;
+  background-color: #8e7d72;
+  color: #FFF;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: 0.4s ease;
+  &:hover, &.selected {
+    cursor: pointer;
+    background-color: #544942;
+    transition: 0.4s ease;
+  }
+}

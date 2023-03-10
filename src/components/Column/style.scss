@@ -1,4 +1,4 @@
-.column {
+.column-container {
   width: 25%;
   border-radius: 10px;
   .column-header {
@@ -44,8 +44,7 @@
     margin: 0px;
   }
   .task-wrapper {
-    max-height: 50vh;
-    min-height: 100px;
+    height: 50vh;
     overflow: auto;
     padding: 15px;
     background-color: #F6F7FB;

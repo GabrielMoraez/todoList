@@ -5,7 +5,7 @@ import { useDispatch } from 'react-redux'
 import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
 
-import { deleteTask, editTask } from '../../slices/dataSlice'
+import { deleteTask, editTask, fullDeleteTask } from '../../slices/task/taskSlice'
 import './style.scss'
 
 const PRIORITY = {
@@ -21,7 +21,7 @@ export default function Task({task, index, columnId}) {
   const dispatch = useDispatch()
 
   const handleTaskDelete = () => {
-    dispatch(deleteTask({taskId: task.id, columnId}))
+    dispatch(fullDeleteTask({taskId: task.id, columnId}))
   }
 
   const handleOpenTask = () => {
@@ -29,26 +29,25 @@ export default function Task({task, index, columnId}) {
     setTaskCollapse(!taskCollapse)
   }
 
-  function EditTaskModal(props) {
-    const [taskTitle, setTaskTitle] = useState(props.task.title)
-    const [taskDescription, setTaskDescription] = useState(props.task.description)
-    const [taskPriority, setTaskPriority] = useState(props.task.priority)
+  function EditTaskModal() {
+    const [taskTitle, setTaskTitle] = useState(task.title)
+    const [taskDescription, setTaskDescription] = useState(task.description)
+    const [taskPriority, setTaskPriority] = useState(task.priority)
 
     const handleEditTask = () => {
       const editedTask = {
-        id: props.task.id,
+        ...task,
         title: taskTitle,
         description: taskDescription,
         priority: taskPriority
       }
   
-      dispatch(editTask({taskId: task.id, editedTask}))
+      dispatch(editTask({ taskId: task.id, editedTask }))
       setTaskCollapse(false)
     }
 
     return (
       <Modal
-        {...props}
         size="lg"
         aria-labelledby="contained-modal-title-vcenter"
         centered
@@ -134,7 +133,6 @@ export default function Task({task, index, columnId}) {
       <EditTaskModal
         show={taskCollapse}
         onHide={() => setTaskCollapse(false)}
-        task={task}
       />
     </>
   )

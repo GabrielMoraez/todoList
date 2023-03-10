@@ -1,8 +1,13 @@
 import { configureStore } from '@reduxjs/toolkit'
-import dataReducer from './slices/dataSlice'
+
+import boardReducer from './slices/board/boardSlice'
+import columnReducer from './slices/column/columnSlice'
+import taskReducer from './slices/task/taskSlice'
 
 export const store = configureStore({
   reducer: {
-    data: dataReducer,
+    boards: boardReducer,
+    columns: columnReducer,
+    tasks: taskReducer
   },
 });

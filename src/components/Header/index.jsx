@@ -40,7 +40,7 @@ export default function Header() {
       </div>
       <div className='searchbar-wrapper'>
         <div className='searchbar'>
-          <FontAwesomeIcon size='md' icon='search' />
+          <FontAwesomeIcon icon='search' />
           <input type='text' placeholder='Search' />
         </div>
       </div>
