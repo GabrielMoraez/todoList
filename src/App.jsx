@@ -5,7 +5,7 @@ import { getColumn, getColumns, updateData  } from './slices/column/columnSlice'
 import { getActiveBoard, getBoardsIds, createBoardThunk } from './slices/board/boardSlice'
 import Board from './components/Board'
 import Header from './components/Header'
-import BoardIcon from './components/boardIcon'
+import BoardIcon from './components/BoardIcon'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 
 import './style.scss'
