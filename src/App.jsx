@@ -1,7 +1,7 @@
 import React from 'react'
 import { DragDropContext } from 'react-beautiful-dnd'
 import { useSelector, useDispatch } from 'react-redux'
-import { getColumns, updateData  } from './slices/column/columnSlice'
+import { getColumn, getColumns, updateData  } from './slices/column/columnSlice'
 import { getActiveBoard, getBoardsIds, createBoardThunk } from './slices/board/boardSlice'
 import Board from './components/Board'
 import Header from './components/Header'
@@ -15,6 +15,7 @@ export default function App() {
   
   const activeBoard = useSelector(state => getActiveBoard(state))
   const boardsIds   = useSelector(state => getBoardsIds(state))
+  const columns     = useSelector(state => getColumns(state))
 
   const handleCreateBoard = () => {
     dispatch(createBoardThunk())
@@ -47,10 +48,10 @@ export default function App() {
       return
     }
 
-    const sourceColumn = activeBoard.columns[source.droppableId]
+    const sourceColumn = columns[source.droppableId]
     const sourceTasks = Array.from(sourceColumn.taskIds)
 
-    const destinationColumn = activeBoard.columns[destination.droppableId]
+    const destinationColumn = columns[destination.droppableId]
     const destinationTasks = Array.from(destinationColumn.taskIds)
 
     sourceTasks.splice(source.index, 1)
@@ -64,16 +65,7 @@ export default function App() {
       ...destinationColumn,
       taskIds: destinationTasks
     }
-
-    const newState = {
-      ...data.boards,
-      columns: {
-        ...data.boards[activeBoard].columns,
-        [newColumn.id]: newColumn,
-        [oldColumn.id]: oldColumn,
-      },
-    }
-
+    
     dispatch(updateData({newColumn, oldColumn}))
   }
 

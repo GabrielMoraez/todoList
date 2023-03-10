@@ -39,21 +39,16 @@ export const columnSlice = createSlice({
     updateData: (state, { payload }) => {
       state = {
         ...state,
-        columns: {
-          ...state.columns,
-          [payload.newColumn.id]: payload.newColumn,
-        },
+        [payload.newColumn.id]: payload.newColumn,
       }
 
       if (payload.oldColumn) {
         state = {
           ...state,
-          columns: {
-            ...state.columns,
-            [payload.oldColumn.id]: payload.oldColumn,
-          },
+          [payload.oldColumn.id]: payload.oldColumn,
         }
       }
+      
       return state
     },
   },
@@ -61,6 +56,7 @@ export const columnSlice = createSlice({
 
 // Selectors
 export const getColumns = state => state.columns
+export const getColumn = (state, columnId) => state.columns[columnId]
 
 
 // Thunks
