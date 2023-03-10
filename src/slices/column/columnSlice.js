@@ -16,12 +16,24 @@ export const columnSlice = createSlice({
       }
       return state
     },
-    deleteColumn: (state, {payload}) => {
+    deleteColumn: (state, { payload }) => {
       delete state[payload.columnId]
       return state
     },
-    editColumn: (state, {payload}) => {
+    editColumn: (state, { payload} ) => {
       state.columns[payload.columnId] = payload.editedColumn
+      return state
+    },
+    changeColumnTasks: (state, { payload }) => {
+      switch (payload.operationType) {
+        case 'delete':
+          let taskIndex = state[payload.columnId].taskIds.indexOf(payload.taskId)
+          state[payload.columnId].taskIds.splice(taskIndex, 1)
+          break;
+        default:
+          state[payload.columnId].taskIds.push(payload.taskId)
+          break;
+      }
       return state
     },
     updateData: (state, { payload }) => {
@@ -104,6 +116,9 @@ export const fullDeleteColumn = createAsyncThunk(
   }
 )
 
-export const { updateData, createColumn, deleteColumn, editColumn } = columnSlice.actions
+export const {
+  updateData, createColumn, deleteColumn,
+  editColumn, changeColumnTasks
+} = columnSlice.actions
 
 export default columnSlice.reducer

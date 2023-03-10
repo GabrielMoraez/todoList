@@ -5,7 +5,7 @@ import { useDispatch } from 'react-redux'
 import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
 
-import { deleteTask, editTask } from '../../slices/task/taskSlice'
+import { deleteTask, editTask, fullDeleteTask } from '../../slices/task/taskSlice'
 import './style.scss'
 
 const PRIORITY = {
@@ -21,7 +21,7 @@ export default function Task({task, index, columnId}) {
   const dispatch = useDispatch()
 
   const handleTaskDelete = () => {
-    dispatch(deleteTask({taskId: task.id, columnId}))
+    dispatch(fullDeleteTask({taskId: task.id, columnId}))
   }
 
   const handleOpenTask = () => {

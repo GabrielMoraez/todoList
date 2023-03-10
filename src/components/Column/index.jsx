@@ -6,7 +6,7 @@ import Button from 'react-bootstrap/Button'
 import Modal from 'react-bootstrap/Modal'
 
 import { deleteColumn, editColumn, fullDeleteColumn} from '../../slices/column/columnSlice'
-import { getTasks, createTask, deleteTask } from '../../slices/task/taskSlice'
+import { getTasks, createTask, deleteTask, createTaskThunk } from '../../slices/task/taskSlice'
 import { changeBoardColumns } from '../../slices/board/boardSlice'
 
 import Task from '../Task'
@@ -33,15 +33,7 @@ export default function Column({column, boardId}) {
   }
 
   const handleCreateTask = () => {
-    const tasksIds = Object.keys(tasks)
-    const newTaskId = `task-${Number((tasksIds[tasksIds.length-1]).split('-')[1]) + 1}`
-
-    const newTask = {
-      id: newTaskId,
-      title: 'Testing creation'
-    }
-
-    dispatch(createTask({ columnId: column.id, newTask, newTaskId }))
+    dispatch(createTaskThunk({ columnId: column.id }))
     setMenuCollapse(false)
   }
 
