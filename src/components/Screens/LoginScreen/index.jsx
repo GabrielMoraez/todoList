@@ -5,9 +5,16 @@ import FloatingLabel from 'react-bootstrap/FloatingLabel'
 
 import './style.scss'
 import { useNavigate } from "react-router-dom"
+import { useState } from "react"
 
 const LoginScreen = () => {
-  const navigate = useNavigate()
+  const [email, setEmail]       = useState('')
+  const [password, setPassword] = useState('')
+  const navigate                = useNavigate()
+
+  const handleLogin = () => {
+    console.log(email, password)
+  }
 
   return (
     <div style={{
@@ -33,17 +40,25 @@ const LoginScreen = () => {
                 label="Email address"
                 className="mb-3"
               >
-                <Form.Control type="email" />
+                <Form.Control
+                  type="email"
+                  value={email}
+                  onChange={({target}) => setEmail(target.value)}
+                />
               </FloatingLabel>
               <FloatingLabel
                 controlId="passord"
                 label="Password"
                 className="mb-3"
               >
-                <Form.Control type="password" placeholder="Password" />
+                <Form.Control
+                  type="password"
+                  value={password}
+                  onChange={({target}) => setPassword(target.value)}
+                />
               </FloatingLabel>
               <div className="form-footer">
-                <Button variant="primary" type="submit">
+                <Button variant="primary" onClick={handleLogin}>
                   Login
                 </Button>
                 <Form.Text className="text-muted">
