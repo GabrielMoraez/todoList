@@ -1,0 +1,23 @@
+.socialsButton {
+  border: 1px solid;
+  padding: 5px 15px;
+  display: flex;
+  border-radius: 10px;
+  align-items: center;
+  gap: 10px;
+  &:hover{
+    cursor: pointer;
+  }
+}
+
+.form-footer {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  span {
+    font-weight: 700;
+    &:hover {
+      cursor: pointer;
+    }
+  }
+}

@@ -1,0 +1,59 @@
+.main-container {
+  color: #8D8D8D;
+  background-color: #FFF;
+  border-radius: 15px 15px 0px 0px;
+  display: flex;
+  flex-direction: row;
+  justify-content: start;
+  .board-side-menu-wrapper {
+    border-right: 1px solid #F2F2F2;
+    height: calc(100vh - 60px);
+    width: 80px;
+    padding: 25px 0px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    gap: 24px;
+    .board-side-menu-hamburger {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    .projects-wrapper {
+      display: flex;
+      flex: 1;
+      flex-direction: column;
+      justify-content: start;
+      align-items: center;
+      gap: 16px;
+      .add-project-icon {
+        color: #FFF;
+        background-color: #8D8D8D;
+        border-radius: 50px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 25px;
+        height: 25px;
+        transition: 0.4s ease;
+        &:hover {
+          cursor: pointer;
+          transition: 0.4s ease;
+          transform: scale(1.2);
+          box-shadow: -2px 4px 15px -1px rgb(0 0 0 / 30%);
+          background-color: #454545;
+        }
+      }
+    }
+    .projects-config {
+      display: flex;
+      border: 1px solid #8e7d7220;
+      border-radius: 50px;
+      width: 40px;
+      height: 40px;
+      justify-content: center;
+      align-items: center;
+    }
+  }
+}
