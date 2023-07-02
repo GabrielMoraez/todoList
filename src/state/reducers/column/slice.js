@@ -1,14 +1,21 @@
-import { createAsyncThunk, createSlice, current } from '@reduxjs/toolkit';
+import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 import data from '../../../dummyData/data'
-import { deleteTask } from '../task/slice';
-import { changeBoardColumns } from '../board/slice';
+import { deleteTask } from '../task/slice'
+import { changeBoardColumns } from '../board/slice'
+import { createClient } from '@supabase/supabase-js'
 
-const initialState = data.columns
+const supabase = createClient('https://feybmhywbhyguwchszdl.supabase.co', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZleWJtaHl3Ymh5Z3V3Y2hzemRsIiwicm9sZSI6ImFub24iLCJpYXQiOjE2ODgyMzc2MzgsImV4cCI6MjAwMzgxMzYzOH0.xsOek1h2THKuKAYgIlYYBigiBMUjwl5VCpg-Nd3XPH4')
 
 const columnSlice = createSlice({
   name: 'column',
-  initialState,
+  initialState: {
+    list: []
+  },
   reducers: {
+    setColumns: (state, { payload }) => {
+      const columns = payload
+      state.list = columns
+    },
     createColumn: (state, { payload }) => {
       state = {
         ...state,
@@ -56,11 +63,11 @@ const columnSlice = createSlice({
 
 export const {
   updateData, createColumn, deleteColumn,
-  editColumn, changeColumnTasks
+  editColumn, changeColumnTasks, setColumns
 } = columnSlice.actions
 
 // Selectors
-export const getColumns = state => state.columns
+export const getColumns = state => state.columns.list
 export const getColumn = (state, columnId) => state.columns[columnId]
 
 
@@ -114,6 +121,27 @@ export const fullDeleteColumn = createAsyncThunk(
     }))
     dispatch(deleteColumn({ columnId: column.id }))
     await Promise.all(tasksToDelete.map(taskId => dispatch(deleteTask({ taskId }))))
+  }
+)
+
+export const fetchColumns = createAsyncThunk(
+  'columnSlice/fetchColumns',
+  async (_, { getState, dispatch }) => {
+    let activeBoardId = getState().boards.activeBoardId
+    try {
+      const { data, error } = await supabase
+        .from('boardColumns')
+        .select(`
+          id,
+          columns (*)
+        `)
+        .eq('board_id', `${activeBoardId}`)
+      const columns = []
+      data.forEach((column) => columns.push(column.columns))
+      dispatch(setColumns(columns))
+    } catch (error) {
+      console.error(error)
+    }
   }
 )
 

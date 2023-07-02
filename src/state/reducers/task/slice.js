@@ -1,13 +1,21 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import data from '../../../dummyData/data'
 import { changeColumnTasks } from '../column/slice';
+import { createClient } from '@supabase/supabase-js';
 
-const initialState = data.tasks
+const supabase = createClient('https://feybmhywbhyguwchszdl.supabase.co', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZleWJtaHl3Ymh5Z3V3Y2hzemRsIiwicm9sZSI6ImFub24iLCJpYXQiOjE2ODgyMzc2MzgsImV4cCI6MjAwMzgxMzYzOH0.xsOek1h2THKuKAYgIlYYBigiBMUjwl5VCpg-Nd3XPH4')
 
 const taskSlice = createSlice({
   name: 'task',
-  initialState,
+  initialState: {
+    list: []
+  },
   reducers: {
+    setTasks: (state, { payload }) => {
+      console.log(payload)
+      const tasks = payload
+      state.list = tasks
+    },
     createTask: (state, { payload }) => {
       state = {
         ...state,
@@ -26,10 +34,10 @@ const taskSlice = createSlice({
   }
 })
 
-export const { createTask, deleteTask, editTask, } = taskSlice.actions
+export const { createTask, deleteTask, editTask, setTasks} = taskSlice.actions
 
 // Selectors 
-export const getTasks = state => state.tasks
+export const getTasks = state => state?.tasks ? state.tasks.list : []
 
 // Thunks
 
@@ -65,5 +73,27 @@ export const fullDeleteTask = createAsyncThunk(
     }))
   }
 )
+
+export const fetchTasks = createAsyncThunk(
+  'taskSlice/fetchTasks',
+  async (_, { getState, dispatch }) => {
+    let userId = getState().auth.user.id
+    try {
+      const { data, error } = await supabase
+        .from('userTasks')
+        .select(`
+          id,
+          tasks (*)
+        `)
+        .eq('user_id', `${userId}`)
+
+        let tasks = []
+        data.forEach(task => tasks.push(task.tasks))
+        dispatch(setTasks(tasks))
+    } catch (error) {
+      dispatch(setError(error.message));
+    }
+  }
+);
 
 export const taskReducer = taskSlice.reducer

@@ -6,7 +6,7 @@ import Button from 'react-bootstrap/Button'
 import Modal from 'react-bootstrap/Modal'
 
 import { deleteColumn, editColumn, fullDeleteColumn} from '../../state/reducers/column/slice'
-import { getTasks, createTask, deleteTask, createTaskThunk } from '../../state/reducers/task/slice'
+import { getTasks, createTask, deleteTask, createTaskThunk, fetchTasks } from '../../state/reducers/task/slice'
 import { changeBoardColumns } from '../../state/reducers/board/slice'
 
 import Task from '../Task'
@@ -25,8 +25,9 @@ export default function Column({column, boardId}) {
   const tasks = useSelector(state => getTasks(state))
 
   useEffect(() => {
-    setTaskCounter(column.taskIds.length)
-  }, [column, tasks])
+    dispatch(fetchTasks())
+    // setTaskCounter(column.taskIds.length)
+  }, [])
 
   const handleToggleMenu = () => {
     setMenuCollapse(!menuCollapse)
@@ -151,7 +152,7 @@ export default function Column({column, boardId}) {
             )}
           </div>
         </div>
-        <Droppable droppableId={column.id}>
+        <Droppable droppableId={column.id.toString()}>
           {provided => (
             <div
               ref={provided.innerRef}
@@ -162,7 +163,7 @@ export default function Column({column, boardId}) {
                 column.taskIds.map((taskId, index) => 
                   <Task
                     key={taskId}
-                    task={tasks[taskId]}
+                    taskId={taskId}
                     index={index}
                     columnId={column.id}
                   />

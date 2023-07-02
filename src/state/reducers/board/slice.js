@@ -7,8 +7,8 @@ import { createClient } from '@supabase/supabase-js'
 const supabase = createClient('https://feybmhywbhyguwchszdl.supabase.co', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZleWJtaHl3Ymh5Z3V3Y2hzemRsIiwicm9sZSI6ImFub24iLCJpYXQiOjE2ODgyMzc2MzgsImV4cCI6MjAwMzgxMzYzOH0.xsOek1h2THKuKAYgIlYYBigiBMUjwl5VCpg-Nd3XPH4')
 
 const initialState = {
-  data: data.boards,
-  activeBoardId: data.activeBoardId,
+  data: null,
+  activeBoardId: null,
 }
 
 const boardSlice = createSlice({
@@ -75,9 +75,13 @@ export const {
 } = boardSlice.actions
 
 // Selectors
-export const getActiveBoard = state => state.boards.data[state.boards.activeBoardId]
-export const getActiveBoardId = state => state.activeBoardId
-export const getBoardsIds = state => Object.keys(state.boards.data)
+export const getActiveBoard = state => {
+  return state.boards.data ?
+    state.boards.data.find(board => board.id === state.boards.activeBoardId) :
+    null
+}
+export const getActiveBoardId = state => state.boards.activeBoardId
+export const getBoardsIds = state => state.boards.data ? Object.keys(state.boards.data) : []
 export const getBoard = (state, boardId) => state.boards.data[boardId]
 
 // Thunks
@@ -137,24 +141,22 @@ export const fetchBoards = createAsyncThunk(
   'boardSlice/fetchBoards',
   async (_, { getState, dispatch }) => {
     let userId = getState().auth.user.id
-    console.log(userId)
     try {
       const { data, error } = await supabase
         .from('userBoards')
         .select(`
           id,
-          boards (id, title)
+          boards (*)
         `)
         .eq('user_id', `${userId}`)
       let boards = []
       data.forEach(board => boards.push(board.boards))
-      console.log(boards)
       dispatch(setBoards(boards))
       dispatch(setActiveBoard(boards[0].id))
     } catch (error) {
       dispatch(setError(error.message));
     }
   }
-);
+)
 
 export const boardReducer = boardSlice.reducer

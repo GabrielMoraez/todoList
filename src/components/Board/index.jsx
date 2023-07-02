@@ -1,7 +1,7 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { changeBoardColumns, editBoard, fullDeleteBoard, getBoardsIds } from '../../state/reducers/board/slice'
-import { createColumn, createColumnThunk, getColumns } from '../../state/reducers/column/slice'
+import { createColumn, createColumnThunk, getColumns, fetchColumns } from '../../state/reducers/column/slice'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import Column from '../Column'
 import Button from 'react-bootstrap/Button';
@@ -18,6 +18,10 @@ export default function Board({ board }) {
 
   const columns     = useSelector(state => getColumns(state))
   const boardsIds   = useSelector(state => getBoardsIds(state))
+
+  useEffect(() => {
+    dispatch(fetchColumns())
+  }, [])
 
   const handleDeleteBoard = () => {
     boardsIds.splice(boardsIds.indexOf(board.id), 1)
@@ -125,11 +129,11 @@ export default function Board({ board }) {
         </div>
         <div className='board-content'>
           {
-            board.columns.length > 0 ?
-            board.columns.map(columnId => (
+            columns.length > 0 ?
+            columns.map(column => (
               <Column
-                key={columnId}
-                column={columns[columnId]}
+                key={column.id}
+                column={column}
                 boardId={board.id}
               />
             )) : <div>aaa</div>

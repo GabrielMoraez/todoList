@@ -10,7 +10,7 @@ export default function BoardIcon({ boardId, activeBoardId }) {
   const board = useSelector(state => getBoard(state, boardId))
 
   const changeActiveBoard = () => {
-    dispatch(setActiveBoard({ boardId }))
+    dispatch(setActiveBoard(1))
   }
 
   const getCapitalizedLetters = (boardTitle) => {

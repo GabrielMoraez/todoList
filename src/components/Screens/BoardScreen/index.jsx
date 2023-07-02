@@ -22,7 +22,6 @@ export default function BoardScreen() {
   }
 
   useEffect(() => {
-    console.log('help')
     dispatch(fetchBoards())
   }, [])
 
@@ -86,7 +85,7 @@ export default function BoardScreen() {
             <div className='projects-wrapper'>
               { boardsIds.length ? 
                 boardsIds.map((boardId) => (
-                  <BoardIcon activeBoardId={activeBoard.id} key={boardId} boardId={boardId} />
+                  <BoardIcon activeBoardId={activeBoard} key={boardId} boardId={boardId} />
                 )) : null
               }
               <div className='add-project-icon' onClick={handleCreateBoard}>
@@ -99,7 +98,7 @@ export default function BoardScreen() {
               </div>
             </div>
           </div>
-          { activeBoard?.id ?
+          { activeBoard ?
             <Board board={activeBoard} /> :
             <div>criar board</div>
           }

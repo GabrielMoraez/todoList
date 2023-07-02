@@ -68,13 +68,13 @@ export const fetchSession = createAsyncThunk(
   'auth/fetchSession',
   async (_, { getState, dispatch }) => {
     try {
-      const { data } = await supabase.auth.getSession();
+      const { data } = await supabase.auth.getSession()
       dispatch(setUser({user: data.session.user}))
       dispatch(setSession({session: data.session}))
     } catch (error) {
-      dispatch(setError(error.message));
+      dispatch(setError(error.message))
     }
   }
-);
+)
 
 export const authReducer = authSlice.reducer

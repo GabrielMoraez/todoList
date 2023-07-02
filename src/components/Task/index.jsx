@@ -1,12 +1,13 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Draggable } from 'react-beautiful-dnd'
 import { useDispatch } from 'react-redux'
 import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
 
-import { deleteTask, editTask, fullDeleteTask } from '../../state/reducers/task/slice'
+import { deleteTask, editTask, fullDeleteTask, getTasks } from '../../state/reducers/task/slice'
 import './style.scss'
+import { useSelector } from 'react-redux';
 
 const PRIORITY = {
   1: 'Low',
@@ -14,9 +15,11 @@ const PRIORITY = {
   3: 'High',
 }
 
-export default function Task({task, index, columnId}) {
+export default function Task({taskId, index, columnId}) {
   const [menuCollapse, setMenuCollapse] = useState(false)
   const [taskCollapse, setTaskCollapse] = useState(false)
+  const tasks = useSelector(state => getTasks(state))
+  const task = tasks.find(t => t.id === taskId)
 
   const dispatch = useDispatch()
 
@@ -93,7 +96,7 @@ export default function Task({task, index, columnId}) {
 
   return (
     <>
-      <Draggable draggableId={task.id} index={index}>
+      <Draggable draggableId={taskId.toString()} index={index}>
         {provided => (
           <div
             ref={provided.innerRef}
