@@ -5,9 +5,9 @@ import { useSelector, useDispatch } from 'react-redux'
 import Button from 'react-bootstrap/Button'
 import Modal from 'react-bootstrap/Modal'
 
-import { deleteColumn, editColumn, fullDeleteColumn} from '../../slices/column/columnSlice'
-import { getTasks, createTask, deleteTask, createTaskThunk } from '../../slices/task/taskSlice'
-import { changeBoardColumns } from '../../slices/board/boardSlice'
+import { deleteColumn, editColumn, fullDeleteColumn} from '../../state/reducers/column/slice'
+import { getTasks, createTask, deleteTask, createTaskThunk } from '../../state/reducers/task/slice'
+import { changeBoardColumns } from '../../state/reducers/board/slice'
 
 import Task from '../Task'
 

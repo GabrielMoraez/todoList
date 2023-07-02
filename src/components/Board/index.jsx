@@ -1,13 +1,14 @@
 import { useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
-import { changeBoardColumns, editBoard, fullDeleteBoard, getBoardsIds } from '../../slices/board/boardSlice'
-import { createColumn, createColumnThunk, getColumns } from '../../slices/column/columnSlice'
+import { changeBoardColumns, editBoard, fullDeleteBoard, getBoardsIds } from '../../state/reducers/board/slice'
+import { createColumn, createColumnThunk, getColumns } from '../../state/reducers/column/slice'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import Column from '../Column'
 import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
 
 import './style.scss'
+import { signOut } from '../../state/reducers/auth/slice'
 
 export default function Board({ board }) {
   const dispatch = useDispatch()
@@ -33,6 +34,10 @@ export default function Board({ board }) {
 
   const handleCreateColumn = () => {
     dispatch(createColumnThunk({ boardId: board.id }))
+  }
+
+  const handleSignOut = () => {
+    dispatch(signOut())
   }
 
   const EditBoardModal = (props) => {
@@ -81,7 +86,7 @@ export default function Board({ board }) {
             <div className='board-icon board-info'>
               <FontAwesomeIcon size='lg' icon='question-circle' />
             </div>
-            <div className='board-icon board-like'>
+            <div onClick={handleSignOut} className='board-icon board-like'>
               <FontAwesomeIcon size='lg' icon='heart' />
             </div>
             <div className='board-icon board-menu-icon' onClick={() => setCollapseBoardMenu(!collapseBoardMenu)}>

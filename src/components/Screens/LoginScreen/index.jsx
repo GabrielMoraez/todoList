@@ -5,16 +5,29 @@ import FloatingLabel from 'react-bootstrap/FloatingLabel'
 
 import './style.scss'
 import { useNavigate } from "react-router-dom"
-import { useState } from "react"
+import { useEffect, useState } from "react"
+import { useDispatch } from "react-redux"
+import { getSession, loginUser } from "../../../state/reducers/auth/slice"
+import { useSelector } from "react-redux"
 
 const LoginScreen = () => {
-  const [email, setEmail]       = useState('')
-  const [password, setPassword] = useState('')
-  const navigate                = useNavigate()
+  const [email, setEmail] = useState('')
+  const [pass, setPass]   = useState('')
+  const navigate          = useNavigate()
+  const dispatch          = useDispatch()
+  const session           = useSelector(state => state.auth.session)
 
   const handleLogin = () => {
-    console.log(email, password)
+    dispatch(loginUser(email, pass))
   }
+
+  useEffect(() => {
+    if (session) {
+      navigate('/boards')
+    } else {
+      dispatch(getSession)
+    }
+  }, [session])
 
   return (
     <div style={{
@@ -53,8 +66,8 @@ const LoginScreen = () => {
               >
                 <Form.Control
                   type="password"
-                  value={password}
-                  onChange={({target}) => setPassword(target.value)}
+                  value={pass}
+                  onChange={({target}) => setPass(target.value)}
                 />
               </FloatingLabel>
               <div className="form-footer">

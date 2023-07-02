@@ -5,7 +5,7 @@ import { useDispatch } from 'react-redux'
 import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
 
-import { deleteTask, editTask, fullDeleteTask } from '../../slices/task/taskSlice'
+import { deleteTask, editTask, fullDeleteTask } from '../../state/reducers/task/slice'
 import './style.scss'
 
 const PRIORITY = {

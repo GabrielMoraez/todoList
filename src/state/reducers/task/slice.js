@@ -1,10 +1,10 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-import data from '../../dummyData/data'
-import { changeColumnTasks } from '../column/columnSlice';
+import data from '../../../dummyData/data'
+import { changeColumnTasks } from '../column/slice';
 
 const initialState = data.tasks
 
-export const taskSlice = createSlice({
+const taskSlice = createSlice({
   name: 'task',
   initialState,
   reducers: {
@@ -24,7 +24,9 @@ export const taskSlice = createSlice({
       return state
     },
   }
-});
+})
+
+export const { createTask, deleteTask, editTask, } = taskSlice.actions
 
 // Selectors 
 export const getTasks = state => state.tasks
@@ -64,6 +66,4 @@ export const fullDeleteTask = createAsyncThunk(
   }
 )
 
-export const { createTask, deleteTask, editTask, } = taskSlice.actions
-
-export default taskSlice.reducer
+export const taskReducer = taskSlice.reducer

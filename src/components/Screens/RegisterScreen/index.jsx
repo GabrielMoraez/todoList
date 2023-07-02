@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom"
 
 import './style.scss'
 import { useState } from 'react'
+import { createClient } from '@supabase/supabase-js'
 
 const RegisterScreen = () => {
   const [name, setName]         = useState('')
@@ -13,8 +14,22 @@ const RegisterScreen = () => {
   const [passConf, setPassConf] = useState('')
   const navigate                = useNavigate()
 
-  const handleRegistration = () => {
-    console.log(name, email, pass, passConf)
+
+  const supabase = createClient('https://feybmhywbhyguwchszdl.supabase.co', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZleWJtaHl3Ymh5Z3V3Y2hzemRsIiwicm9sZSI6ImFub24iLCJpYXQiOjE2ODgyMzc2MzgsImV4cCI6MjAwMzgxMzYzOH0.xsOek1h2THKuKAYgIlYYBigiBMUjwl5VCpg-Nd3XPH4')
+
+
+  const handleRegistration = async () => {
+    const { data, error } = await supabase.auth.signUp(
+      {
+        email: email,
+        password: pass,
+        options: {
+          data: {
+            name: name,
+          }
+        }
+      }
+    )    
   }
 
   return (

@@ -1,11 +1,11 @@
 import { createAsyncThunk, createSlice, current } from '@reduxjs/toolkit';
-import data from '../../dummyData/data'
-import { deleteTask } from '../task/taskSlice';
-import { changeBoardColumns } from '../board/boardSlice';
+import data from '../../../dummyData/data'
+import { deleteTask } from '../task/slice';
+import { changeBoardColumns } from '../board/slice';
 
 const initialState = data.columns
 
-export const columnSlice = createSlice({
+const columnSlice = createSlice({
   name: 'column',
   initialState,
   reducers: {
@@ -52,7 +52,12 @@ export const columnSlice = createSlice({
       return state
     },
   },
-});
+})
+
+export const {
+  updateData, createColumn, deleteColumn,
+  editColumn, changeColumnTasks
+} = columnSlice.actions
 
 // Selectors
 export const getColumns = state => state.columns
@@ -112,9 +117,4 @@ export const fullDeleteColumn = createAsyncThunk(
   }
 )
 
-export const {
-  updateData, createColumn, deleteColumn,
-  editColumn, changeColumnTasks
-} = columnSlice.actions
-
-export default columnSlice.reducer
+export const columnReducer = columnSlice.reducer

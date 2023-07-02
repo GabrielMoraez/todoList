@@ -1,6 +1,6 @@
 import { useDispatch, useSelector } from 'react-redux'
 
-import { getBoard, setActiveBoard } from '../../slices/board/boardSlice'
+import { getBoard, setActiveBoard } from '../../state/reducers/board/slice'
 
 import './style.scss'
 

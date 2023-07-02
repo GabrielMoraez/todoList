@@ -8,6 +8,10 @@ import {
 import LoginScreen from "../components/Screens/LoginScreen"
 import RegisterScreen from "../components/Screens/RegisterScreen"
 import BoardScreen from "../components/Screens/BoardScreen"
+import { PrivateRoute } from "./PrivateRoute"
+import { useSelector } from "react-redux"
+import { getSession } from "../state/reducers/auth/slice"
+import { useDispatch } from "react-redux"
 
 const router = createBrowserRouter([
   {
@@ -20,7 +24,11 @@ const router = createBrowserRouter([
   },
   {
     path: "/boards",
-    element: <BoardScreen />,
+    element: (
+      <PrivateRoute>
+        <BoardScreen />
+      </PrivateRoute>
+    ),
   },
 ]);
 

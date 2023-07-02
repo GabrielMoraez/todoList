@@ -1,14 +1,14 @@
-import { createAsyncThunk, createSlice, current } from '@reduxjs/toolkit';
-import data from '../../dummyData/data'
-import { deleteColumn } from '../column/columnSlice';
-import { deleteTask } from '../task/taskSlice';
+import { createAsyncThunk, createSlice, current } from '@reduxjs/toolkit'
+import data from '../../../dummyData/data'
+import { deleteColumn } from '../column/slice'
+import { deleteTask } from '../task/slice'
 
 const initialState = {
   data: data.boards,
   activeBoardId: data.activeBoardId,
 }
 
-export const boardSlice = createSlice({
+const boardSlice = createSlice({
   name: 'boards',
   initialState,
   reducers: {
@@ -64,7 +64,11 @@ export const boardSlice = createSlice({
       }
     }
   },
-});
+})
+
+export const {
+  setActiveBoard, createBoard, deleteBoard, editBoard, changeBoardColumns, changeBoardTasks
+} = boardSlice.actions
 
 // Selectors
 export const getActiveBoard = state => state.boards.data[state.boards.activeBoardId]
@@ -125,8 +129,4 @@ export const createBoardThunk = createAsyncThunk(
    }
 )
 
-export const {
-  setActiveBoard, createBoard, deleteBoard, editBoard, changeBoardColumns, changeBoardTasks
-} = boardSlice.actions
-
-export default boardSlice.reducer
+export const boardReducer = boardSlice.reducer
