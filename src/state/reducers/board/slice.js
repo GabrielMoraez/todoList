@@ -1,5 +1,4 @@
 import { createAsyncThunk, createSlice, current } from '@reduxjs/toolkit'
-import data from '../../../dummyData/data'
 import { deleteColumn } from '../column/slice'
 import { deleteTask } from '../task/slice'
 import { createClient } from '@supabase/supabase-js'
@@ -24,25 +23,8 @@ const boardSlice = createSlice({
       state.activeBoardId = activeBoardId
     },
     createBoard: (state, { payload }) => {
-      state = {
-        ...state,
-        data: {
-          ...state.data,
-          [payload.newBoard.id]: payload.newBoard,
-        }
-      }
-      return state
-    },
-    deleteBoard: (state, { payload }) => {
-      delete state.data[payload.boardId]
-      return state
-    },
-    editBoard: (state, { payload }) => {
-      state.data[payload.boardId] = {
-        ...state.data[payload.boardId],
-        ...payload.editedBoard
-      }
-      return state
+      const board = payload
+      state.data.push(board)
     },
     changeBoardColumns: (state, { payload }) => {
       const { operationType, targetBoardId, columnId } = payload
@@ -71,7 +53,7 @@ const boardSlice = createSlice({
 })
 
 export const {
-  setActiveBoard, createBoard, deleteBoard, editBoard, changeBoardColumns, changeBoardTasks, setBoards
+  setActiveBoard, createBoard, editBoard, changeBoardColumns, changeBoardTasks, setBoards
 } = boardSlice.actions
 
 // Selectors
@@ -81,59 +63,64 @@ export const getActiveBoard = state => {
     null
 }
 export const getActiveBoardId = state => state.boards.activeBoardId
-export const getBoardsIds = state => state.boards.data ? Object.keys(state.boards.data) : []
-export const getBoard = (state, boardId) => state.boards.data[boardId]
+export const getBoardsIds = state => state.boards.data ? state.boards.data.map((board) => board.id) : []
+export const getBoard = (state, boardId) => state.boards.data.find((board) => board.id === boardId)
 
 // Thunks
 
-export const fullDeleteBoard = createAsyncThunk(
-  'boardSlice/fullDeleteBoard',
-  async ({ newActiveBoardId }, { dispatch, getState }) => {
-    const state = getState()
-    let boardId = state.boards.activeBoardId
-    let columns = state.boards.data[boardId].columns
-    let tasks = []
+export const deleteBoardThunk = createAsyncThunk(
+  'boardSlice/deleteBoardThunk',
+  async (boardId, { dispatch, getState }) => {
+    let boardList = getState().boards.data
+    try {
+      console.log(boardId)
 
-    dispatch(setActiveBoard({ boardId: newActiveBoardId }))
-    dispatch(deleteBoard({ boardId }))
-    columns.forEach(column => {
-      dispatch(deleteColumn({ columnId: column}))
-      tasks.push(...state.columns[column].taskIds)
-    })
-    tasks.forEach(task => {
-      dispatch(deleteTask({ taskId: task }))
-    })
+      const { error } = await supabase
+        .from('boards')
+        .delete()
+        .eq('id', boardId)
+
+      boardList = boardList.filter(board => board.id !== boardId)
+      dispatch(setBoards(boardList))
+      dispatch(setActiveBoard(boardList[0].id))
+    } catch (error) {
+      console.error(error)
+    }
   }
 )
 
 export const createBoardThunk = createAsyncThunk(
   'boardSlice/createBoardThunk',
    async (_, { dispatch, getState }) => {
-    const state = getState()
+    let userId = getState().auth.user.id
 
-    const boardsIds = Object.keys(state.boards.data)
+    try {
+          
+      const { data: boardData, error: boardError } = await supabase
+        .from('boards')
+        .insert([
+          { title: 'New Board', columns: [] },
+        ])
+        .select()
 
-    const sortedBoardIds = boardsIds.sort((a, b) => {
-      console.log(a, b)
-      const aNum = parseInt(a.replace('board-', ''));
-      const bNum = parseInt(b.replace('board-', ''));
+        
+      const { data: relData, error: relError } = await supabase
+        .from('userBoards')
+        .insert([
+          { user_id: userId, board_id: boardData[0].id },
+        ])
+        .select()
 
-      return aNum !== bNum 
-      ? aNum - bNum 
-      : a < b ? -1 : a > b ? 1 : 0;
-    })
 
-    const lastBoardId = sortedBoardIds[sortedBoardIds.length - 1]
-    const newBoardId  = `board-${Number((lastBoardId).split('-')[1]) + 1}`
-
+      dispatch(createBoard(boardData[0]))
+      // dispatch(setActiveBoard({ boardId: newBoard.id }))
+    } catch (error) {
+      console.error(error)
+    }
     const newBoard    = {
-      id: newBoardId,
       title: 'New Board',
       columns: [],
-    }
-
-    dispatch(createBoard({newBoard}))
-    dispatch(setActiveBoard({ boardId: newBoard.id }))
+    } 
   }
 )
 

@@ -22,10 +22,7 @@ export default function Column({column, boardId}) {
 
   const dispatch = useDispatch()
 
-  const tasks = useSelector(state => getTasks(state))
-
   useEffect(() => {
-    dispatch(fetchTasks())
     // setTaskCounter(column.taskIds.length)
   }, [])
 

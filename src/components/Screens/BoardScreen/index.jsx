@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react'
 import { DragDropContext } from 'react-beautiful-dnd'
 import { useSelector, useDispatch } from 'react-redux'
-import { getColumn, getColumns, updateData  } from '../../../state/reducers/column/slice'
+import { getColumns, updateData  } from '../../../state/reducers/column/slice'
 import { getActiveBoard, getBoardsIds, createBoardThunk, fetchBoards } from '../../../state/reducers/board/slice'
 import Board from '../../Board'
 import Header from '../../Header'
@@ -9,6 +9,7 @@ import BoardIcon from '../../BoardIcon'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 
 import './style.scss'
+import { fetchTasks } from '../../../state/reducers/task/slice'
 
 export default function BoardScreen() {
   const dispatch = useDispatch()
@@ -23,6 +24,7 @@ export default function BoardScreen() {
 
   useEffect(() => {
     dispatch(fetchBoards())
+    dispatch(fetchTasks())
   }, [])
 
   const onDragEnd = result => {
@@ -85,7 +87,7 @@ export default function BoardScreen() {
             <div className='projects-wrapper'>
               { boardsIds.length ? 
                 boardsIds.map((boardId) => (
-                  <BoardIcon activeBoardId={activeBoard} key={boardId} boardId={boardId} />
+                  <BoardIcon key={boardId} boardId={boardId} />
                 )) : null
               }
               <div className='add-project-icon' onClick={handleCreateBoard}>

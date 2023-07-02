@@ -33,9 +33,9 @@ export default function Task({taskId, index, columnId}) {
   }
 
   function EditTaskModal() {
-    const [taskTitle, setTaskTitle] = useState(task.title)
-    const [taskDescription, setTaskDescription] = useState(task.description)
-    const [taskPriority, setTaskPriority] = useState(task.priority)
+    const [taskTitle, setTaskTitle] = useState(task.title || '')
+    const [taskDescription, setTaskDescription] = useState(task.description || '')
+    const [taskPriority, setTaskPriority] = useState(task.priority || 0)
 
     const handleEditTask = () => {
       const editedTask = {
@@ -96,7 +96,7 @@ export default function Task({taskId, index, columnId}) {
 
   return (
     <>
-      <Draggable draggableId={taskId.toString()} index={index}>
+    {task && <Draggable draggableId={taskId.toString()} index={index}>
         {provided => (
           <div
             ref={provided.innerRef}
@@ -132,7 +132,8 @@ export default function Task({taskId, index, columnId}) {
             </div>
           </div>
         )}
-      </Draggable>
+      </Draggable>}
+
       <EditTaskModal
         show={taskCollapse}
         onHide={() => setTaskCollapse(false)}

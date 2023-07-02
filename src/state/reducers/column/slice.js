@@ -1,5 +1,4 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
-import data from '../../../dummyData/data'
 import { deleteTask } from '../task/slice'
 import { changeBoardColumns } from '../board/slice'
 import { createClient } from '@supabase/supabase-js'

@@ -1,5 +1,4 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-import data from '../../../dummyData/data'
 import { changeColumnTasks } from '../column/slice';
 import { createClient } from '@supabase/supabase-js';
 
@@ -12,7 +11,6 @@ const taskSlice = createSlice({
   },
   reducers: {
     setTasks: (state, { payload }) => {
-      console.log(payload)
       const tasks = payload
       state.list = tasks
     },

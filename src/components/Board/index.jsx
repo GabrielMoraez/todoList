@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
-import { changeBoardColumns, editBoard, fullDeleteBoard, getBoardsIds } from '../../state/reducers/board/slice'
+import { changeBoardColumns, editBoard, getBoardsIds, deleteBoardThunk } from '../../state/reducers/board/slice'
 import { createColumn, createColumnThunk, getColumns, fetchColumns } from '../../state/reducers/column/slice'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import Column from '../Column'
@@ -24,10 +24,7 @@ export default function Board({ board }) {
   }, [])
 
   const handleDeleteBoard = () => {
-    boardsIds.splice(boardsIds.indexOf(board.id), 1)
-    const newActiveBoardId = boardsIds[0]
-    
-    dispatch(fullDeleteBoard({ newActiveBoardId }))
+    dispatch(deleteBoardThunk(board.id))
     setCollapseBoardMenu(false)
   }
 

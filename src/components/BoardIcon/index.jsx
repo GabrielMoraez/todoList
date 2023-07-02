@@ -1,16 +1,17 @@
 import { useDispatch, useSelector } from 'react-redux'
 
-import { getBoard, setActiveBoard } from '../../state/reducers/board/slice'
+import { getActiveBoardId, getBoard, setActiveBoard } from '../../state/reducers/board/slice'
 
 import './style.scss'
 
 
-export default function BoardIcon({ boardId, activeBoardId }) {
+export default function BoardIcon({ boardId }) {
   const dispatch = useDispatch()
   const board = useSelector(state => getBoard(state, boardId))
+  const activeBoardId = useSelector(state => getActiveBoardId(state))
 
   const changeActiveBoard = () => {
-    dispatch(setActiveBoard(1))
+    dispatch(setActiveBoard(boardId))
   }
 
   const getCapitalizedLetters = (boardTitle) => {
@@ -30,7 +31,7 @@ export default function BoardIcon({ boardId, activeBoardId }) {
     return firstLetters;
   }
   return (
-    <div className={`project-board-icon ${activeBoardId === boardId ? 'selected' : ''}`} onClick={changeActiveBoard}>
+    <div className={`project-board-icon ${activeBoardId == boardId ? 'selected' : ''}`} onClick={changeActiveBoard}>
       {getCapitalizedLetters(board.title)}
     </div>
   )
