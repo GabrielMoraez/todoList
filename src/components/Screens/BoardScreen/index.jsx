@@ -1,8 +1,8 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { DragDropContext } from 'react-beautiful-dnd'
 import { useSelector, useDispatch } from 'react-redux'
 import { getColumn, getColumns, updateData  } from '../../../state/reducers/column/slice'
-import { getActiveBoard, getBoardsIds, createBoardThunk } from '../../../state/reducers/board/slice'
+import { getActiveBoard, getBoardsIds, createBoardThunk, fetchBoards } from '../../../state/reducers/board/slice'
 import Board from '../../Board'
 import Header from '../../Header'
 import BoardIcon from '../../BoardIcon'
@@ -20,6 +20,11 @@ export default function BoardScreen() {
   const handleCreateBoard = () => {
     dispatch(createBoardThunk())
   }
+
+  useEffect(() => {
+    console.log('help')
+    dispatch(fetchBoards())
+  }, [])
 
   const onDragEnd = result => {
     const { destination, source, draggableId } = result

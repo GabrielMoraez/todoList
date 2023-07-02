@@ -67,7 +67,6 @@ export const signOut = () => async (dispatch) => {
 export const fetchSession = createAsyncThunk(
   'auth/fetchSession',
   async (_, { getState, dispatch }) => {
-    console.log('asldighasigahs')
     try {
       const { data } = await supabase.auth.getSession();
       dispatch(setUser({user: data.session.user}))
