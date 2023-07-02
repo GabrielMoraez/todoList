@@ -1,11 +1,13 @@
+import { useEffect, useState } from 'react'
+import { useSelector, useDispatch } from 'react-redux'
+import { useNavigate } from "react-router-dom"
+
 import Form from 'react-bootstrap/Form'
 import Button from 'react-bootstrap/Button'
 import FloatingLabel from 'react-bootstrap/FloatingLabel'
-import { useNavigate } from "react-router-dom"
+import { fetchSession, getSession, registerUser } from '../../../state/reducers/auth/slice'
 
 import './style.scss'
-import { useState } from 'react'
-import { createClient } from '@supabase/supabase-js'
 
 const RegisterScreen = () => {
   const [name, setName]         = useState('')
@@ -13,24 +15,25 @@ const RegisterScreen = () => {
   const [pass, setPass]         = useState('')
   const [passConf, setPassConf] = useState('')
   const navigate                = useNavigate()
+  const session                 = useSelector(getSession)
+  const dispatch                = useDispatch()
 
-
-  const supabase = createClient('https://feybmhywbhyguwchszdl.supabase.co', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZleWJtaHl3Ymh5Z3V3Y2hzemRsIiwicm9sZSI6ImFub24iLCJpYXQiOjE2ODgyMzc2MzgsImV4cCI6MjAwMzgxMzYzOH0.xsOek1h2THKuKAYgIlYYBigiBMUjwl5VCpg-Nd3XPH4')
-
-
-  const handleRegistration = async () => {
-    const { data, error } = await supabase.auth.signUp(
-      {
-        email: email,
-        password: pass,
-        options: {
-          data: {
-            name: name,
-          }
-        }
-      }
-    )    
+  const handleRegister = () => {
+    dispatch(registerUser(name, email, pass))
   }
+
+  useEffect(() => {
+    const fetchData = async () => {
+      await dispatch(fetchSession());
+    }
+    fetchData()
+  }, [])
+
+  useEffect(() => {
+    if (session) {fetchSession
+      navigate('/boards')
+    }
+  }, [session])
 
   return (
     <div style={{
@@ -97,7 +100,7 @@ const RegisterScreen = () => {
                 />
               </FloatingLabel>
               <div className="form-footer">
-                <Button variant="primary" onClick={handleRegistration}>
+                <Button variant="primary" onClick={handleRegister}>
                   Create Account
                 </Button>
                 <Form.Text className="text-muted">

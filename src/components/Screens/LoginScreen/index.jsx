@@ -7,7 +7,7 @@ import './style.scss'
 import { useNavigate } from "react-router-dom"
 import { useEffect, useState } from "react"
 import { useDispatch } from "react-redux"
-import { getSession, loginUser } from "../../../state/reducers/auth/slice"
+import { fetchSession, getSession, loginUser } from "../../../state/reducers/auth/slice"
 import { useSelector } from "react-redux"
 
 const LoginScreen = () => {
@@ -15,17 +15,22 @@ const LoginScreen = () => {
   const [pass, setPass]   = useState('')
   const navigate          = useNavigate()
   const dispatch          = useDispatch()
-  const session           = useSelector(state => state.auth.session)
+  const session           = useSelector(getSession)
 
   const handleLogin = () => {
     dispatch(loginUser(email, pass))
   }
 
   useEffect(() => {
-    if (session) {
+    const fetchData = async () => {
+      await dispatch(fetchSession());
+    }
+    fetchData()
+  }, [])
+
+  useEffect(() => {
+    if (session) {fetchSession
       navigate('/boards')
-    } else {
-      dispatch(getSession)
     }
   }, [session])
 
