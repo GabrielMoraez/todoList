@@ -5,7 +5,7 @@ import { useSelector, useDispatch } from 'react-redux'
 import Button from 'react-bootstrap/Button'
 import Modal from 'react-bootstrap/Modal'
 
-import { deleteColumn, editColumn, fullDeleteColumn} from '../../state/reducers/column/slice'
+import { deleteColumnThunk, editColumn } from '../../state/reducers/column/slice'
 import { getTasks, createTask, deleteTask, createTaskThunk, fetchTasks } from '../../state/reducers/task/slice'
 
 import Task from '../Task'
@@ -39,7 +39,7 @@ export default function Column({column, boardId}) {
   }
 
   const handleDeleteColumn = () => {
-    dispatch(fullDeleteColumn({boardId, column}))    
+    dispatch(deleteColumnThunk({ columnId: column.id, boardId}))    
   }
 
   const handleCollapseEditColumn = () => {

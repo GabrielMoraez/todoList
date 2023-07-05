@@ -1,5 +1,5 @@
 import { createAsyncThunk, createSlice, current } from '@reduxjs/toolkit'
-import { deleteColumn, fetchColumns } from '../column/slice'
+import { fetchColumns } from '../column/slice'
 import { deleteTask } from '../task/slice'
 import { createClient } from '@supabase/supabase-js'
 
