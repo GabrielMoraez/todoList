@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { getActiveBoardId, getBoard, setActiveBoard } from '../../state/reducers/board/slice'
 
 import './style.scss'
-
+import { fetchColumns } from '../../state/reducers/column/slice'
 
 export default function BoardIcon({ boardId }) {
   const dispatch = useDispatch()
@@ -12,6 +12,7 @@ export default function BoardIcon({ boardId }) {
 
   const changeActiveBoard = () => {
     dispatch(setActiveBoard(boardId))
+    dispatch(fetchColumns())
   }
 
   const getCapitalizedLetters = (boardTitle) => {

@@ -1,13 +1,13 @@
 import { useState, useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
-import { changeBoardColumns, editBoard, getBoardsIds, deleteBoardThunk } from '../../state/reducers/board/slice'
+import { changeBoardColumns, getBoardsIds, deleteBoardThunk, updateBoardThunk } from '../../state/reducers/board/slice'
 import { createColumn, createColumnThunk, getColumns, fetchColumns } from '../../state/reducers/column/slice'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import Column from '../Column'
 import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
 
-import './style.scss'
+import './style.scss' 
 import { signOut } from '../../state/reducers/auth/slice'
 
 export default function Board({ board }) {
@@ -50,7 +50,7 @@ export default function Board({ board }) {
         title: boardTitle,
       }
   
-      dispatch(editBoard({boardId: board.id, editedBoard}))
+      dispatch(updateBoardThunk({boardId: board.id, body: editedBoard}))
       setShowBoardEdit(false)
     }
 

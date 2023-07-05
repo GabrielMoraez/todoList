@@ -1,5 +1,5 @@
 import { createAsyncThunk, createSlice, current } from '@reduxjs/toolkit'
-import { deleteColumn } from '../column/slice'
+import { deleteColumn, fetchColumns } from '../column/slice'
 import { deleteTask } from '../task/slice'
 import { createClient } from '@supabase/supabase-js'
 
@@ -25,6 +25,14 @@ const boardSlice = createSlice({
     createBoard: (state, { payload }) => {
       const board = payload
       state.data.push(board)
+    },
+    updateBoard: (state, { payload }) => {
+      const updatedBoard = payload
+      state.data.forEach((board, i) => {
+        if (board.id === updatedBoard.id) {
+          state.data[i] = updatedBoard
+        }
+      })
     },
     changeBoardColumns: (state, { payload }) => {
       const { operationType, targetBoardId, columnId } = payload
@@ -53,7 +61,7 @@ const boardSlice = createSlice({
 })
 
 export const {
-  setActiveBoard, createBoard, editBoard, changeBoardColumns, changeBoardTasks, setBoards
+  setBoards, setActiveBoard, createBoard, updateBoard, changeBoardColumns, changeBoardTasks
 } = boardSlice.actions
 
 // Selectors
@@ -62,12 +70,39 @@ export const getActiveBoard = state => {
     state.boards.data.find(board => board.id === state.boards.activeBoardId) :
     null
 }
+
 export const getActiveBoardId = state => state.boards.activeBoardId
+
 export const getBoardsIds = state => state.boards.data ? state.boards.data.map((board) => board.id) : []
+
 export const getBoard = (state, boardId) => state.boards.data.find((board) => board.id === boardId)
 
 // Thunks
 
+// Get's the boards lists from the database, based on the user's id
+export const fetchBoards = createAsyncThunk(
+  'boardSlice/fetchBoards',
+  async (_, { getState, dispatch }) => {
+    let userId = getState().auth.user.id
+    try {
+      const { data, error } = await supabase
+        .from('userBoards')
+        .select(`
+          id,
+          boards (*)
+        `)
+        .eq('user_id', `${userId}`)
+      let boards = []
+      data.forEach(board => boards.push(board.boards))
+      dispatch(setBoards(boards))
+      dispatch(setActiveBoard(boards[0].id))
+    } catch (error) {
+      dispatch(setError(error.message));
+    }
+  }
+)
+
+// Deletes a specific board based on its id, then updates the boards list state and the activeBoard
 export const deleteBoardThunk = createAsyncThunk(
   'boardSlice/deleteBoardThunk',
   async (boardId, { dispatch, getState }) => {
@@ -83,12 +118,15 @@ export const deleteBoardThunk = createAsyncThunk(
       boardList = boardList.filter(board => board.id !== boardId)
       dispatch(setBoards(boardList))
       dispatch(setActiveBoard(boardList[0].id))
+      dispatch(fetchColumns())
+
     } catch (error) {
       console.error(error)
     }
   }
 )
 
+//  Creates a new board at database, after creating calls the setBoard to update the state and changes the activeBoard to the new board ID
 export const createBoardThunk = createAsyncThunk(
   'boardSlice/createBoardThunk',
    async (_, { dispatch, getState }) => {
@@ -113,7 +151,9 @@ export const createBoardThunk = createAsyncThunk(
 
 
       dispatch(createBoard(boardData[0]))
-      // dispatch(setActiveBoard({ boardId: newBoard.id }))
+      dispatch(setActiveBoard(boardData[0].id))
+      dispatch(fetchColumns())
+
     } catch (error) {
       console.error(error)
     }
@@ -124,22 +164,21 @@ export const createBoardThunk = createAsyncThunk(
   }
 )
 
-export const fetchBoards = createAsyncThunk(
-  'boardSlice/fetchBoards',
-  async (_, { getState, dispatch }) => {
-    let userId = getState().auth.user.id
+// Get's the boards lists from the database, based on the user's id
+export const updateBoardThunk = createAsyncThunk(
+  'boardSlice/updateBoardThunk',
+  async ({body, boardId}, { getState, dispatch }) => {
     try {
       const { data, error } = await supabase
-        .from('userBoards')
-        .select(`
-          id,
-          boards (*)
-        `)
-        .eq('user_id', `${userId}`)
-      let boards = []
-      data.forEach(board => boards.push(board.boards))
-      dispatch(setBoards(boards))
-      dispatch(setActiveBoard(boards[0].id))
+        .from('boards')
+        .update({
+          title: body.title,
+          columns: body.columns
+        })
+        .eq('id', boardId)
+        .select()
+    
+      dispatch(updateBoard(data[0]))
     } catch (error) {
       dispatch(setError(error.message));
     }
