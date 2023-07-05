@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
-import { changeBoardColumns, getBoardsIds, deleteBoardThunk, updateBoardThunk } from '../../state/reducers/board/slice'
+import { getBoardsIds, deleteBoardThunk, updateBoardThunk } from '../../state/reducers/board/slice'
 import { createColumn, createColumnThunk, getColumns, fetchColumns } from '../../state/reducers/column/slice'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import Column from '../Column'
@@ -34,7 +34,7 @@ export default function Board({ board }) {
   }
 
   const handleCreateColumn = () => {
-    dispatch(createColumnThunk({ boardId: board.id }))
+    dispatch(createColumnThunk(board.id))
   }
 
   const handleSignOut = () => {

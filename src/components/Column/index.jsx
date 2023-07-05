@@ -7,7 +7,6 @@ import Modal from 'react-bootstrap/Modal'
 
 import { deleteColumn, editColumn, fullDeleteColumn} from '../../state/reducers/column/slice'
 import { getTasks, createTask, deleteTask, createTaskThunk, fetchTasks } from '../../state/reducers/task/slice'
-import { changeBoardColumns } from '../../state/reducers/board/slice'
 
 import Task from '../Task'
 

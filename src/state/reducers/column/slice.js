@@ -1,7 +1,7 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 import { deleteTask } from '../task/slice'
-import { changeBoardColumns } from '../board/slice'
 import { createClient } from '@supabase/supabase-js'
+import { updateBoardThunk } from '../board/slice'
 
 const supabase = createClient('https://feybmhywbhyguwchszdl.supabase.co', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZleWJtaHl3Ymh5Z3V3Y2hzemRsIiwicm9sZSI6ImFub24iLCJpYXQiOjE2ODgyMzc2MzgsImV4cCI6MjAwMzgxMzYzOH0.xsOek1h2THKuKAYgIlYYBigiBMUjwl5VCpg-Nd3XPH4')
 
@@ -16,11 +16,8 @@ const columnSlice = createSlice({
       state.list = columns
     },
     createColumn: (state, { payload }) => {
-      state = {
-        ...state,
-        [payload.newColumn.id]: payload.newColumn,
-      }
-      return state
+      const newColumn = payload
+      state.list.push(newColumn)
     },
     deleteColumn: (state, { payload }) => {
       delete state[payload.columnId]
@@ -73,53 +70,59 @@ export const getColumn = (state, columnId) => state.columns[columnId]
 // Thunks
 export const createColumnThunk = createAsyncThunk(
   'columnSlice/createColumnTunk',
-  async ({ boardId }, { dispatch, getState }) => {
-    const state = getState()
-    const columnIds = Object.keys(state.columns)
+  async (boardId, { dispatch, getState }) => {
+    const board = getState().boards.data.find(board => board.id === boardId)
 
-    const sortedIds = columnIds.sort((a, b) => {
-      const aNum = parseInt(a.replace('column-', ''));
-      const bNum = parseInt(b.replace('column-', ''));
+    try {
+      const { data: columnData, error: columnError } = await supabase
+        .from('columns')
+        .insert([
+          {
+            title: 'New Column',
+            taskIds: [],
+            config: {
+              "textColor": "#FFF",
+              "backgroundColor": "#8e7d72"
+            }
+          },
+        ])
+        .select()
+      
+      const { data, error } = await supabase
+        .from('boardColumns')
+        .insert([
+          { board_id: boardId, column_id: columnData[0].id },
+        ])
+        .select()
 
-      return aNum !== bNum 
-      ? aNum - bNum 
-      : a < b ? -1 : a > b ? 1 : 0;
-    })
+      dispatch(createColumn(columnData[0]))
 
-    const lastColumnId = sortedIds[sortedIds.length - 1]
-    const newColumnId = `column-${Number((lastColumnId).split('-')[1]) + 1}`
+      dispatch(updateBoardThunk({
+        body: {
+          title: board.title,
+          columns: [...board.columns, columnData[0].id],
+        },
+        boardId: boardId,
+      }))
 
-    const newColumn = {
-      id: newColumnId,
-      title: 'New Column',
-      taskIds: [],
-      config: {
-        backgroundColor: '#8e7d72',
-        textColor: '#FFF'
-      }
+    } catch (error) {
+      console.error(error)
     }
-
-    dispatch(createColumn({newColumn, boardId}))
-    dispatch(changeBoardColumns({
-      operationType: 'create',
-      targetBoardId: boardId,
-      columnId: newColumnId
-    }))
   }
 )
 
 export const fullDeleteColumn = createAsyncThunk(
   'columnSlice/fullDeleteColumn',
   async ({ boardId, column }, { dispatch }) => {
-    const tasksToDelete = column.taskIds || []
+  //   const tasksToDelete = column.taskIds || []
     
-    dispatch(changeBoardColumns({
-      operationType: 'delete',
-      targetBoardId: boardId,
-      columnId: column.id
-    }))
-    dispatch(deleteColumn({ columnId: column.id }))
-    await Promise.all(tasksToDelete.map(taskId => dispatch(deleteTask({ taskId }))))
+  //   dispatch(changeBoardColumns({
+  //     operationType: 'delete',
+  //     targetBoardId: boardId,
+  //     columnId: column.id
+  //   }))
+  //   dispatch(deleteColumn({ columnId: column.id }))
+  //   await Promise.all(tasksToDelete.map(taskId => dispatch(deleteTask({ taskId }))))
   }
 )
 

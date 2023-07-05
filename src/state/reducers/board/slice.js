@@ -34,22 +34,6 @@ const boardSlice = createSlice({
         }
       })
     },
-    changeBoardColumns: (state, { payload }) => {
-      const { operationType, targetBoardId, columnId } = payload
-      const targetBoard = state.data[targetBoardId]
-    
-      switch (operationType) {
-        case 'delete':
-          const columnIndex = targetBoard.columns.indexOf(columnId)
-          targetBoard.columns.splice(columnIndex, 1)
-          break
-        default:
-          targetBoard.columns.push(columnId)
-          break
-      }
-    
-      return state;
-    },
     changeBoardTasks: (state, { payload }) => {
       if (payload.operation == 'delete') {
         state.boards.data[payload.boardId].tasks = state.boards.data[payload.boardId].tasks.filter(task => task.id!= payload.taskId)
@@ -61,7 +45,7 @@ const boardSlice = createSlice({
 })
 
 export const {
-  setBoards, setActiveBoard, createBoard, updateBoard, changeBoardColumns, changeBoardTasks
+  setBoards, setActiveBoard, createBoard, updateBoard, changeBoardTasks
 } = boardSlice.actions
 
 // Selectors
@@ -157,10 +141,6 @@ export const createBoardThunk = createAsyncThunk(
     } catch (error) {
       console.error(error)
     }
-    const newBoard    = {
-      title: 'New Board',
-      columns: [],
-    } 
   }
 )
 
